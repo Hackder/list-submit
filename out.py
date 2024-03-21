@@ -21,7 +21,7 @@ def error(message: str, context: Any = __UNIT) -> None:
 
 
 RESET = "\033[0m"
-PRIMARY = "\033[95m"
+PRIMARY = "\033[92m"
 SECONDARY = "\033[94m"
 DANGER = "\033[91m"
 
