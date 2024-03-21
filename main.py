@@ -1,11 +1,10 @@
 import list_api
-import sys
 
 if __name__ == "__main__":
-    session = list_api.login(sys.argv[1], sys.argv[2])
+    session = list_api.login("example@acme.com", "password")
 
-    # courses = list_api.get_all_courses(session)
-    # print(courses)
+    courses = list_api.get_all_courses(session)
+    print(courses)
 
     # for p in list_api.get_problems_for_course(session, 155):
     #     print(p)
