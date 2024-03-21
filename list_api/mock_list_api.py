@@ -1,13 +1,17 @@
-from .models import Course, Problem, Submit, ListSession
 import random
+import time
+
+from .models import Course, Problem, Submit, ListSession
 
 
 def login(email: str, password: str) -> ListSession:
+    time.sleep(0.3)
     print(f"Logging in with - email: {email}  password: {password}")
     return ListSession(session=None)  # type: ignore
 
 
 def get_all_courses(session: ListSession) -> list[Course]:
+    time.sleep(0.3)
     return [
         Course(id=1, name="Python Course"),
         Course(id=2, name="Java for beginners"),
@@ -16,12 +20,14 @@ def get_all_courses(session: ListSession) -> list[Course]:
 
 
 def mark_course_as_active(session: ListSession, course_id: int) -> None:
+    time.sleep(0.3)
     name = get_all_courses(session)[course_id - 1].name
     print(f"Marking course as active - course_id: {course_id}, name: {name}")
     return None
 
 
 def get_problems_for_course(session: ListSession, course_id: int) -> list[Problem]:
+    time.sleep(0.3)
     name = get_all_courses(session)[course_id - 1].name
     name = name.lower().replace(" ", "_")
     return [
@@ -50,6 +56,7 @@ def submit_solution(
     session: ListSession, problem_id: int, solution_file: bytes
 ) -> Submit:
     global version
+    time.sleep(0.3)
     course_id = problem_id % 10
     course_name = get_all_courses(session)[course_id - 1].name
     problem_name = get_problems_for_course(session, course_id)[problem_id // 100].name
@@ -75,6 +82,7 @@ Submitting solution
 def run_test_for_submit(
     session: ListSession, problem_id: int, submit_version: int
 ) -> None:
+    time.sleep(0.3)
     course_id = problem_id % 10
     problem_name = get_problems_for_course(session, course_id)[problem_id // 100].name
     print(
