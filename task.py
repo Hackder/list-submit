@@ -5,7 +5,7 @@ import threading
 IsAlive = Callable[[], bool]
 
 
-def run_with_companion(task: Callable, companion: Callable[[IsAlive], None]) -> None:
+def run_with_companion[T](task: Callable[[], T], companion: Callable[[IsAlive], None]) -> T:
     """
     Starts the task and companion functions at the same time,
     and waits for the task to finish.
@@ -13,6 +13,8 @@ def run_with_companion(task: Callable, companion: Callable[[IsAlive], None]) -> 
     The companion function is passed a helper getter `is_alive` function,
     that will return True if the task is still running. It is the developers
     responsibility to terminate the compation when the task is finished.
+
+    Returns the result of the task function.
 
     Example:
         def companion(is_alive):
@@ -23,13 +25,16 @@ def run_with_companion(task: Callable, companion: Callable[[IsAlive], None]) -> 
         run_with_companion(some_long_task, companion)
     """
 
-    alive = True
+    alive: list[bool] = [True]
 
     def is_alive() -> bool:
         nonlocal alive
-        return alive
+        return alive[0]
 
     companion_thread = threading.Thread(target=lambda: companion(is_alive))
     companion_thread.start()
-    task()
+    result = task()
+    alive[0] = False
     companion_thread.join()
+
+    return result
