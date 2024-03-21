@@ -15,14 +15,15 @@ __UNIT = object()
 
 
 def error(message: str, context: Any = __UNIT) -> None:
-    print(message, file=sys.stderr)
+    print(ERROR + message + RESET, file=sys.stderr)
     if context is not __UNIT:
         print(context, file=sys.stderr)
 
 
 RESET = "\033[0m"
-PRIMARY = "\033[95m"
+PRIMARY = "\033[92m"
 SECONDARY = "\033[94m"
+ERROR = "\033[91m"
 
 
 def println(*args, end: str = "\n") -> None:
