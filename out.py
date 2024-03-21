@@ -15,7 +15,7 @@ __UNIT = object()
 
 
 def error(message: str, context: Any = __UNIT) -> None:
-    print(ERROR + message + RESET, file=sys.stderr)
+    println(danger(message), file=sys.stderr)
     if context is not __UNIT:
         print(context, file=sys.stderr)
 
@@ -23,11 +23,11 @@ def error(message: str, context: Any = __UNIT) -> None:
 RESET = "\033[0m"
 PRIMARY = "\033[92m"
 SECONDARY = "\033[94m"
-ERROR = "\033[91m"
+DANGER = "\033[91m"
 
 
-def println(*args, end: str = "\n") -> None:
-    sys.stdout.write(" ".join(map(str, args)) + end)
+def println(*args, end: str = "\n", file: Any = sys.stdout) -> None:
+    print(" ".join(map(str, args)), end=end, file=file)
 
 
 def flush() -> None:
@@ -44,6 +44,10 @@ def primary(text: str) -> str:
 
 def secondary(text: str) -> str:
     return color(text, SECONDARY)
+
+
+def danger(text: str) -> str:
+    return color(text, DANGER)
 
 
 def hide_cursor():
