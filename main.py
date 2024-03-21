@@ -1,16 +1,46 @@
+import atexit
+import time
+
 import list_api
+import out
+import ui
 
-if __name__ == "__main__":
-    session = list_api.login("example@acme.com", "password")
 
-    courses = list_api.get_all_courses(session)
-    print(courses)
+def exit_handler():
+    # If the program is terminated, or an unexpected error occurs,
+    # make sure the cursor is shown again
+    out.show_cursor()
 
-    # for p in list_api.get_problems_for_course(session, 155):
-    #     print(p)
+
+atexit.register(exit_handler)
+
+
+def main():
+    out.println(out.primary("Changed files"), "game_of_life.py, test_game_of_life.py")
+
+    session = ui.display_request(
+        "logging in", lambda: list_api.login("example@acme.com", "password")
+    )
+
+    courses = ui.display_request(
+        "all courses", lambda: list_api.get_all_courses(session)
+    )
+
+    problems = ui.display_request(
+        f"problems for course '{courses[0].name}'",
+        lambda: list_api.get_problems_for_course(session, 1),
+    )
 
     # with open("solution.zip", "rb") as f:
     #     byte_data = f.read()
     #     list_api.submit_solution(session, 5479, byte_data)
 
     # list_api.run_test_for_submit(session, 5479, 2)
+
+
+if __name__ == "__main__":
+    start = time.time()
+    main()
+    end = time.time()
+
+    out.println(out.primary("Finished"), f"in {end - start:.2f} seconds")
