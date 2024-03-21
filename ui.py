@@ -35,3 +35,11 @@ def display_request[T](name: str, request: Callable[[], T]) -> T:
     tab_spacing = " " * 2
     out.println(out.primary(f"{tab_spacing}Request"), name, "", end="")
     return task.run_with_companion(request, loading_spinner)
+
+
+def ok_or_exit[T](task: Callable[[], T], code: int = 1) -> T:
+    try:
+        return task()
+    except Exception as e:
+        out.error(str(e))
+        exit(1)
