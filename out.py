@@ -22,7 +22,7 @@ def error(message: str, context: Any = __UNIT) -> None:
 
 RESET = "\033[0m"
 PRIMARY = "\033[95m"
-SECONSARY = "\033[94m"
+SECONDARY = "\033[94m"
 
 
 def println(*args, end: str = "\n") -> None:
@@ -42,7 +42,7 @@ def primary(text: str) -> str:
 
 
 def secondary(text: str) -> str:
-    return color(text, SECONSARY)
+    return color(text, SECONDARY)
 
 
 def hide_cursor():
