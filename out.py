@@ -26,8 +26,8 @@ SECONDARY = "\033[94m"
 DANGER = "\033[91m"
 
 
-def println(*args, end: str = "\n", file=sys.stdout) -> None:
-    file.write(" ".join(map(str, args)) + end)
+def println(*args, end: str = "\n", file: Any = sys.stdout) -> None:
+    print(" ".join(map(str, args)), end=end, file=file)
 
 
 def flush(file=sys.stdout) -> None:
