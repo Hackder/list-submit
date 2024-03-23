@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Any
+from typing import Any, TextIO
 
 if os.name == "nt":
     import ctypes
@@ -17,7 +17,7 @@ __UNIT = object()
 def error(message: str, context: Any = __UNIT) -> None:
     println(danger(message), file=sys.stderr)
     if context is not __UNIT:
-        print(context, file=sys.stderr)
+        println(context, file=sys.stderr)
 
 
 RESET = "\033[0m"
@@ -27,11 +27,15 @@ DANGER = "\033[91m"
 
 
 def println(*args, end: str = "\n", file: Any = sys.stdout) -> None:
-    print(" ".join(map(str, args)), end=end, file=file)
+    print(*args, end=end, file=file)
 
 
-def flush() -> None:
-    sys.stdout.flush()
+def flush(file: TextIO = None) -> None:
+    if file is not None:
+        file.flush()
+    else:
+        sys.stdout.flush()
+        sys.stderr.flush()
 
 
 def color(text: str, color_code: str) -> str:
