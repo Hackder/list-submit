@@ -10,9 +10,10 @@ problem-id = "<problem_id>"
 # flatten-structure = true
 # max-file-size = 10_000_000
 
-files = [
-  "file1",
-  "file2",
-]
+expected-directory = "<this_directory>"
 
+files = ["file1", "file2"]
 
+accepted-filetypes = [
+  "all",
+] # [".py", ".txt", ".pdf", ".java"], default is ["all"]
