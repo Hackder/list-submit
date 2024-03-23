@@ -26,7 +26,7 @@ SECONDARY = "\033[94m"
 DANGER = "\033[91m"
 
 
-def println(*args, end: str = "\n", file: Any = sys.stdout) -> None:
+def println(*args, end: str = "\n", file: TextIO = sys.stdout) -> None:
     print(*args, end=end, file=file)
 
 
