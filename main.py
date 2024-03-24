@@ -1,9 +1,11 @@
 import atexit
 import time
+import sys
 
 import list_api
 import out
 import ui
+import cli
 
 
 def exit_handler():
@@ -16,6 +18,12 @@ atexit.register(exit_handler)
 
 
 def main():
+    options = ui.ok_or_exit(lambda: cli.parse_cli_params(sys.argv))
+
+    if options.help:
+        cli.print_help_message()
+        return
+
     out.println(out.primary("Changed files"), "game_of_life.py, test_game_of_life.py")
 
     session = ui.display_request(
