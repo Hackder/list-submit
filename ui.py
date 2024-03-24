@@ -1,4 +1,6 @@
 from typing import Callable
+from getpass import getpass
+
 import time
 import task
 import out
@@ -42,4 +44,10 @@ def ok_or_exit[T](task: Callable[[], T], code: int = 1) -> T:
         return task()
     except Exception as e:
         out.error(str(e))
-        exit(1)
+        exit(code)
+
+
+def prompt(message: str, hide_input: bool = False) -> str:
+    if hide_input:
+        return getpass(out.bold(message))
+    return input(out.bold(message))

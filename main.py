@@ -27,6 +27,14 @@ def main():
 
     global_config = config.load_global_config()
 
+    if options.auth:
+        email = ui.prompt("Email: ")
+        password = ui.prompt("Password: ", hide_input=True)
+
+        global_config.email = email
+        global_config.password = password
+        config.save_global_config(global_config)
+
     out.println(out.primary("Changed files"), "game_of_life.py, test_game_of_life.py")
 
     session = ui.display_request(

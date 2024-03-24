@@ -25,6 +25,8 @@ PRIMARY = "\033[92m"
 SECONDARY = "\033[90m"
 DANGER = "\033[91m"
 
+BOLD = "\033[1m"
+
 
 def println(*args, end: str = "\n", file: TextIO = sys.stdout) -> None:
     print(*args, end=end, file=file)
@@ -48,6 +50,10 @@ def secondary(text: str) -> str:
 
 def danger(text: str) -> str:
     return color(text, DANGER)
+
+
+def bold(text: str) -> str:
+    return color(text, BOLD)
 
 
 def hide_cursor():
