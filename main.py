@@ -6,6 +6,7 @@ import list_api
 import out
 import ui
 import cli
+import config
 
 
 def exit_handler():
@@ -23,6 +24,8 @@ def main():
     if options.help:
         cli.print_help_message()
         return
+
+    global_config = config.load_global_config()
 
     out.println(out.primary("Changed files"), "game_of_life.py, test_game_of_life.py")
 
