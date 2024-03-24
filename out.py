@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Any
+from typing import Any, TextIO
 
 if os.name == "nt":
     import ctypes
@@ -15,22 +15,23 @@ __UNIT = object()
 
 
 def error(message: str, context: Any = __UNIT) -> None:
-    print(message, file=sys.stderr)
+    println(danger(message), file=sys.stderr)
     if context is not __UNIT:
-        print(context, file=sys.stderr)
+        println(context, file=sys.stderr)
 
 
 RESET = "\033[0m"
-PRIMARY = "\033[95m"
+PRIMARY = "\033[92m"
 SECONDARY = "\033[94m"
+DANGER = "\033[91m"
 
 
-def println(*args, end: str = "\n") -> None:
-    sys.stdout.write(" ".join(map(str, args)) + end)
+def println(*args, end: str = "\n", file: TextIO = sys.stdout) -> None:
+    print(*args, end=end, file=file)
 
 
-def flush() -> None:
-    sys.stdout.flush()
+def flush(file: TextIO = sys.stdout) -> None:
+    file.flush()
 
 
 def color(text: str, color_code: str) -> str:
@@ -43,6 +44,10 @@ def primary(text: str) -> str:
 
 def secondary(text: str) -> str:
     return color(text, SECONDARY)
+
+
+def danger(text: str) -> str:
+    return color(text, DANGER)
 
 
 def hide_cursor():
