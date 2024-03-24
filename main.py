@@ -38,17 +38,21 @@ def main():
     out.println(out.primary("Changed files"), "game_of_life.py, test_game_of_life.py")
 
     session = ui.display_request(
-        "logging in", lambda: list_api.login("example@acme.com", "password")
+        "logging in",
+        lambda: list_api.login(global_config.email, global_config.password),
     )
 
     courses = ui.display_request(
         "all courses", lambda: list_api.get_all_courses(session)
     )
 
+    course = courses[2]
     problems = ui.display_request(
-        f"problems for course '{courses[0].name}'",
-        lambda: list_api.get_problems_for_course(session, 1),
+        f"problems for course '{course.name}'",
+        lambda: list_api.get_problems_for_course(session, course.id),
     )
+
+    print(problems)
 
     # with open("solution.zip", "rb") as f:
     #     byte_data = f.read()
