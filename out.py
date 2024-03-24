@@ -30,7 +30,7 @@ def println(*args, end: str = "\n", file: TextIO = sys.stdout) -> None:
     print(*args, end=end, file=file)
 
 
-def flush(file=sys.stdout) -> None:
+def flush(file: TextIO = sys.stdout) -> None:
     file.flush()
 
 
