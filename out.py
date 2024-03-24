@@ -30,12 +30,8 @@ def println(*args, end: str = "\n", file: TextIO = sys.stdout) -> None:
     print(*args, end=end, file=file)
 
 
-def flush(file: TextIO = None) -> None:
-    if file is not None:
-        file.flush()
-    else:
-        sys.stdout.flush()
-        sys.stderr.flush()
+def flush(file: TextIO = sys.stdout) -> None:
+    file.flush()
 
 
 def color(text: str, color_code: str) -> str:
