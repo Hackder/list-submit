@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="robots" content="noindex, follow" />
+        <title>L.I.S.T. - Úlohy a hodnotenie</title>
+        <link type="text/css" rel="stylesheet" media="screen" href="https://list.fmph.uniba.sk/public/css/frontend_general.css?list_version=1.9.0" />
+        <link href="https://list.fmph.uniba.sk/public/css/general_text_content_styles.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link href="https://list.fmph.uniba.sk/public/css/list-theme/jquery-ui-1.10.2.custom.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link href="https://list.fmph.uniba.sk/public/css/jqueryui-timepicker-addon.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link href="https://list.fmph.uniba.sk/public/css/notification.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link href="https://list.fmph.uniba.sk/public/css/font-awesome/css/font-awesome.min.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link rel="shortcut icon" href="https://list.fmph.uniba.sk/favicon.ico" />
+        <script type="text/javascript">
+            var global_base_url = "https://list.fmph.uniba.sk/";
+            var logout_question_text = "";
+            var jqueryui_datepicker_region = "sk";
+            var list_version = "?list_version=1.9.0";
+        </script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/language/sk/messages.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.mousewheel-3.0.6.pack.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.fancybox.pack.js?v=2.1.4&amp;list_version=1.9.0"></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="https://list.fmph.uniba.sk/public/css/jquery.fancybox.css?v=2.1.4&amp;list_version=1.9.0" />
+        <link rel="stylesheet" type="text/css" media="screen" href="https://list.fmph.uniba.sk/public/css/jquery.fancybox-buttons.css?v=2.1.4&amp;list_version=1.9.0" />
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.fancybox-buttons.js?v=2.1.4&amp;list_version=1.9.0"></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="https://list.fmph.uniba.sk/public/css/jquery.fancybox-thumbs.css?v=2.1.4&amp;list_version=1.9.0" />
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.fancybox-thumbs.js?v=2.1.4&amp;list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.fancybox-media.js?v=1.0.0&amp;list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery-ui-1.10.2.custom.min.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery-ui-timepicker-addon.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.blockUI.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/api.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/courses/quick_change.js?list_version=1.9.0"></script>
+        <link rel="stylesheet" type="text/css" href="https://list.fmph.uniba.sk/public/css/frontend_tasks.css?list_version=1.9.0" media="screen" />        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/tasks/list.js?list_version=1.9.0"></script>        
+    </head>
+    <body>
+                <div id="top_meta_informations">
+            <div class="left">    <span id="active_course_id">
+            Programovanie 4 - Java / Letný semester 2023/2024
+                    <ul id="top_courses_selector_id">
+                        <li><a href="https://list.fmph.uniba.sk/courses/quick_course_change/152/-CURRENT_URL-.html">Funkcionálne programovanie / Letný semester 2023/2024</a></li>
+                        <li><a href="https://list.fmph.uniba.sk/courses/quick_course_change/155/-CURRENT_URL-.html">Programovanie 2 / Letný semester 2023/2024</a></li>
+                        <li><a href="https://list.fmph.uniba.sk/courses/quick_course_change/151/-CURRENT_URL-.html">Programovanie 4 - Java / Letný semester 2023/2024</a></li>
+                        <li><a href="https://list.fmph.uniba.sk/courses/quick_course_change/149/-CURRENT_URL-.html">Programovanie 1 / Zimný semester 2023/2024</a></li>
+                    </ul>
+            </span>
+</div>
+            <div class="right"><div class="student_panel">
+    Juraj Petráš | <a href="https://list.fmph.uniba.sk/students/my_account.html">Môj účet</a> | 
+    <a href="https://list.fmph.uniba.sk/students/logout.html" class="pagemenu_logout">Odhlásiť sa</a>
+</div></div>
+            <div class="clear"></div>
+        </div>
+        <div id="mainwrap">
+            <div id="leftwrap">
+                <div class="title">
+                    <h4>Navigácia</h4>
+                </div>
+                <ul id="pagemenu">
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/courses.html" class="">Zapísať sa na kurz</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/groups.html" class="">Zmeniť svoju skupinu</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/courses/course_description.html" class="">Popis kurzu</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/content.html" class="">Obsah kurzu</a>
+                    </li>
+                    <li class="selected">
+            <a href="https://list.fmph.uniba.sk/tasks.html" class="">Úlohy a hodnotenie</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/projects.html" class="">Projekty</a>
+                    </li>
+        
+</ul>
+
+                
+    <div class="title"><h4>Body za úlohy</h4></div>
+    <div class="tasks_points">
+        <table class="points_table">
+            <thead>
+                <tr>
+                    <th class="th_task_set_type">Typ úlohy</th>
+                    <th class="th_points">Body</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td class="td_task_set_type">Spolu</td>
+                    <td class="td_points">71.9&nbsp;/&nbsp;59.7</td>
+                </tr>
+            </tfoot>
+            <tbody>
+                                                
+                                                     
+
+                <tr class="">
+                    <td class="td_task_set_type">Cvičenie</td>
+                                            <td class="td_points">8.95&nbsp;/&nbsp;8.95</td>
+                                    </tr>
+                                
+                                                     
+
+                <tr class="">
+                    <td class="td_task_set_type">Domáca úloha</td>
+                                            <td class="td_points">15&nbsp;/&nbsp;18</td>
+                                    </tr>
+                                
+                                                     
+
+                <tr class="">
+                    <td class="td_task_set_type">Midterm</td>
+                                            <td class="td_points">0&nbsp;/&nbsp;0</td>
+                                    </tr>
+                                
+                                                     
+
+                <tr class="">
+                    <td class="td_task_set_type">Prémia</td>
+                                            <td class="td_points">0&nbsp;/&nbsp;0</td>
+                                    </tr>
+                                
+                                                     
+
+                <tr class="">
+                    <td class="td_task_set_type">Prémia</td>
+                                            <td class="td_points">30.95&nbsp;/&nbsp;15.75</td>
+                                    </tr>
+                                
+                                                     
+
+                <tr class="">
+                    <td class="td_task_set_type">Quadterm</td>
+                                            <td class="td_points">17&nbsp;/&nbsp;17</td>
+                                    </tr>
+                                
+                                                     
+
+                <tr class="">
+                    <td class="td_task_set_type">Skúška</td>
+                                            <td class="td_points">0&nbsp;/&nbsp;0</td>
+                                    </tr>
+                            </tbody>
+        </table>
+    </div>
+    <div class="title"><h4>Body za projekty</h4></div>
+    <div class="tasks_points">
+        <table class="points_table">
+                                    <thead>
+                <tr>
+                    <th class="th_task_set_type">Projekt</th>
+                    <th class="th_points">Body</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td class="td_task_set_type">Spolu</td>
+                    <td class="td_points">0&nbsp;/&nbsp;0</td>
+                </tr>
+            </tfoot>
+            <tbody>
+                                            
+            </tbody>
+        </table>
+    </div>
+    <div class="color_legend">
+        <div class="color_legend_title"><h4>Legenda farieb</h4></div>
+        <div class="color_legend_data">Body sa započítavajú do celkového súčtu bodov</div>
+        <div class="color_legend_data blue_text">Body sa nezapočítavajú do celkového súčtu bodov</div>
+    </div>
+
+
+            </div>
+            <div id="rightwrap"><div class="internal_padding">
+    <h1>Úlohy a hodnotenie</h1>
+            <h2>Programovanie 4 - Java / Letný semester 2023/2024</h2>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <fieldset>
+            <div class="task_sets_show_all">
+                <form method="post" action="https://list.fmph.uniba.sk/tasks.html">
+                    <label><input type="checkbox" name="show_all_task_sets" value="1" onchange="javascript:submit();"> Zobraziť všetky úlohy.</label>
+                </form>
+            </div>
+            <table class="task_sets_table">
+                <thead>
+                    <tr>
+                        <th class="th_name">Názov</th>
+                        <th class="th_time_limit">Limit odosielania riešení</th>
+                        <th class="th_points">Body</th>
+                        <th class="th_comment">Učitelov komentár / hodnotil</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">Získal(a) si 71.9 bodov z 59.7 za všetky typy úloh.</td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                                                            <tr>
+                        <td colspan="4" class="td_task_set_type">Cvičenie</td>
+                    </tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <tr class="tr_background_odd task_set_time_day_before_deadline">
+                        <td class="td_name">                            <a href="https://list.fmph.uniba.sk/tasks/task/5377_cvicenie_5.html">Cvičenie 5</a>
+                                                        <br /><sub>Máš odovzdaných <strong>2</strong> súborov v tejto úlohe.</sub>
+                                                    </td>
+                        <td class="td_time_limit">
+                                                            29.03.2024 23:59:59                                                    </td>
+                        <td class="td_points">1.5 / 1.5</td>
+                        <td class="td_comment">
+                                                                                </td>
+                    </tr>
+                                        <tr>
+                        <td colspan="4" class="td_task_set_type_points">Získal(a) si 8.95 bodov z 8.95.</td>
+                    </tr>
+                                        <tr>
+                        <td colspan="4" class="td_task_set_type">Domáca úloha</td>
+                    </tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <tr class="tr_background_odd task_set_time_week_before_deadline">
+                        <td class="td_name">                            <a href="https://list.fmph.uniba.sk/tasks/task/5365_domaca_uloha_5.html">Domáca úloha 5</a>
+                                                        <br /><sub>Máš odovzdaných <strong>12</strong> súborov v tejto úlohe.</sub>
+                                                    </td>
+                        <td class="td_time_limit">
+                                                            31.03.2024 23:59:59                                                    </td>
+                        <td class="td_points">3 / 3</td>
+                        <td class="td_comment">
+                                                                                </td>
+                    </tr>
+                                                                                                                                                <tr class="tr_background_even ">
+                        <td class="td_name">                            <a href="https://list.fmph.uniba.sk/tasks/task/5364_domaca_uloha_6.html">Domáca úloha 6</a>
+                                                    </td>
+                        <td class="td_time_limit">
+                                                            07.04.2024 23:59:59                                                    </td>
+                        <td class="td_points">- / 3</td>
+                        <td class="td_comment">
+                                                            <div class="not_valuated_message">Zatiaľ nehodnotené.</div>
+                                                                                                                </td>
+                    </tr>
+                                        <tr>
+                        <td colspan="4" class="td_task_set_type_points">Získal(a) si 15 bodov z 18.</td>
+                    </tr>
+                                        <tr>
+                        <td colspan="4" class="td_task_set_type">Prémia</td>
+                    </tr>
+                                                                                                                                                                                                                                                                                                                        <tr class="tr_background_odd task_set_time_two_days_before_deadline">
+                        <td class="td_name">                            <a href="https://list.fmph.uniba.sk/tasks/task/5460_premia_kone_na_sachovnici_s_damami.html">Prémia Kone na šachovnici (s dámami)</a>
+                                                        <br /><sub>Máš odovzdaných <strong>6</strong> súborov v tejto úlohe.</sub>
+                                                    </td>
+                        <td class="td_time_limit">
+                                                            30.03.2024 23:59:59                                                    </td>
+                        <td class="td_points">1.5 / 1.5</td>
+                        <td class="td_comment">
+                                                                                </td>
+                    </tr>
+                                                                                                                                                                                                                                                                                                                        <tr class="tr_background_even task_set_time_two_days_before_deadline">
+                        <td class="td_name">                            <a href="https://list.fmph.uniba.sk/tasks/task/5462_premia_obrateny_fibonacci.html">Prémia Obrátený Fibonacci</a>
+                                                        <br /><sub>Máš odovzdaných <strong>3</strong> súborov v tejto úlohe.</sub>
+                                                    </td>
+                        <td class="td_time_limit">
+                                                            30.03.2024 23:59:59                                                    </td>
+                        <td class="td_points">0.5 / 0.5</td>
+                        <td class="td_comment">
+                                                                                                                        <em>Peter Borovanský</em>
+                                                    </td>
+                    </tr>
+                                                                                                                                                <tr class="tr_background_odd ">
+                        <td class="td_name">                            <a href="https://list.fmph.uniba.sk/tasks/task/5484_premia_prednaskova.html">Prémia prednášková</a>
+                                                    </td>
+                        <td class="td_time_limit">
+                                                            Bez obmedzenia na odovzdanie riešenia.                                                    </td>
+                        <td class="td_points">- / 0</td>
+                        <td class="td_comment">
+                                                            <div class="not_valuated_message">Zatiaľ nehodnotené.</div>
+                                                                                                                </td>
+                    </tr>
+                                                                                                                                                <tr class="tr_background_even ">
+                        <td class="td_name">                            <a href="https://list.fmph.uniba.sk/tasks/task/5358_errata.html">Errata</a>
+                                                    </td>
+                        <td class="td_time_limit">
+                                                            Bez obmedzenia na odovzdanie riešenia.                                                    </td>
+                        <td class="td_points">0.2 / 0</td>
+                        <td class="td_comment">
+                                                                                                                        <em>Lukáš Gajdošech</em>
+                                                    </td>
+                    </tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <tr class="tr_background_odd task_set_time_week_before_deadline">
+                        <td class="td_name">                            <a href="https://list.fmph.uniba.sk/tasks/task/5499_premia_return_true.html">Prémia Return true</a>
+                                                        <br /><sub>Máš odovzdaných <strong>1</strong> súborov v tejto úlohe.</sub>
+                                                    </td>
+                        <td class="td_time_limit">
+                                                            02.04.2024 23:59:59                                                    </td>
+                        <td class="td_points">1 / 1</td>
+                        <td class="td_comment">
+                                                                                </td>
+                    </tr>
+                                                                                                                            <tr>
+                        <td colspan="4" class="td_task_set_type_points">Získal(a) si 30.95 bodov z 15.75.</td>
+                    </tr>
+                                        <tr>
+                        <td colspan="4" class="td_task_set_type">Quadterm</td>
+                    </tr>
+                                                                                                                            <tr>
+                        <td colspan="4" class="td_task_set_type_points">Získal(a) si 17 bodov z 17.</td>
+                    </tr>
+                                    </tbody>
+            </table>
+
+            <table class="task_sets_colors_legend">
+    <caption>Legenda farieb:</caption>
+    <tr>
+        <td class="task_set_time_long_after_deadline">Dlho po deadline</td>
+        <td class="task_set_time_after_deadline">Po deadline</td>
+        <td class="task_set_time_day_before_deadline">Deň pred deadlineom</td>
+        <td class="task_set_time_two_days_before_deadline">Dva dni pred deadlineom</td>
+        <td class="task_set_time_week_before_deadline">Týždeň pred deadlineom</td>
+        <td class="task_set_time_long_before_deadline">Dlho pred deadlineom</td>
+                    <td class="task_set_time_after_deadline_with_submits">Po deadline s riešeniami</td>
+            </tr>
+</table>
+        </fieldset>
+    </div></div>
+            <div class="clear"></div>
+        </div>
+        <div id="footer"><span>L.I.S.T. verzia 1.9.0. <span class="additional">Pôvodne navrhol a vytvoril Andrej Jursa v 2013 ako bakalársku prácu na škole Univerzita Komenského v Bratislave, Fakulta matematiky, fyziky a informatiky.</span></span></div>
+    </body>
+</html>
+

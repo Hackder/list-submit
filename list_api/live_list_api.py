@@ -1,9 +1,11 @@
 import requests
-from bs4 import BeautifulSoup
-from bs4.element import Tag
 from .models import Course, Problem, Submit, ListSession
+import logging
 
 import out
+from . import list_parser
+
+logger = logging.getLogger(__name__)
 
 
 LIST_BASE_URL = "https://list.fmph.uniba.sk"
@@ -41,47 +43,7 @@ def login(email: str, password: str) -> ListSession:
 
 def get_all_courses(session: ListSession) -> list[Course]:
     response = session.session.get(__url("/courses.html"))
-
-    soup = BeautifulSoup(response.text, "html.parser")
-    course_elements = soup.find_all("div", class_="period_course")
-
-    def create_course(element) -> Course | None:
-        name_h4 = element.find("h4")
-
-        if name_h4 is None:
-            out.error("Failed to parse course name", response)
-            return None
-
-        name = name_h4.text or "Empty name"
-
-        anchors = element.find_all("a")
-
-        if len(anchors) == 0:
-            out.error(f"Failed to parse course anchors: {name}", element)
-            return None
-
-        anchor = anchors[-1]
-
-        if anchor.text != "Zobraz detaily":
-            out.error(f"Failed to parse course id: {name}", response)
-            raise ListApiError("Failed to parse course name")
-
-        href = anchor.get("href")
-
-        if href is None:
-            out.error("Failed to parse course href", response)
-            return None
-
-        # TODO: Handle errors
-        id = href.split("/")[-1].split(".")[0]
-        id = int(id)
-
-        return Course(id=id, name=name)
-
-    courses = map(create_course, course_elements)
-    courses = [c for c in courses if c is not None]
-
-    return courses
+    return list_parser.get_all_courses(response.text)
 
 
 def mark_course_as_active(session: ListSession, course_id: int) -> None:
@@ -109,25 +71,7 @@ def get_problems_for_course(session: ListSession, course_id: int) -> list[Proble
     mark_course_as_active(session, course_id)
 
     response = session.session.get(__url(f"/tasks.html"))
-
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    problem_elements = soup.find_all("td", class_="td_name")
-
-    def parse_problem(element) -> Problem:
-        anchor = element.find("a")
-
-        href = anchor.get("href")
-
-        # TODO: Handle errors
-        full_id = href.split("/")[-1].split(".")[0]
-        id = int(full_id.split("_")[0])
-        name = anchor.text
-
-        return Problem(id=id, full_id=full_id, name=name)
-
-    problems = map(parse_problem, problem_elements)
-    return list(problems)
+    return list_parser.get_problems(response.text)
 
 
 def submit_solution(
@@ -154,36 +98,7 @@ def submit_solution(
         )
         raise ListApiError("Failed to submit solution")
 
-    soup = BeautifulSoup(response.text, "html.parser")
-    submits_elements = soup.select("table.solutions_table tr")
-
-    def parse_submit(element: Tag) -> Submit | None:
-        input = element.find("input")
-
-        if input is None:
-            out.error("Failed to parse submit input", element)
-            return None
-
-        assert isinstance(input, Tag)
-        version = input.get("value")
-        version = int(str(version))
-
-        td = element.find_next("td", class_="file")
-        assert isinstance(td, Tag)
-
-        a = td.find("a")
-        assert isinstance(a, Tag)
-
-        href = a.get("href")
-        id = str(href).split("/")[-1].split(".")[0]
-
-        name = a.text
-
-        return Submit(id=id, version=version, name=name, problem_id=problem_id)
-
-    submits = map(parse_submit, submits_elements)
-    submits = [s for s in submits if s is not None]
-
+    submits = list_parser.get_submits(response.text, problem_id)
     return submits[-1]
 
 
@@ -192,29 +107,21 @@ def run_test_for_submit(
 ) -> None:
     response = session.session.get(__url(f"/tasks/task/{problem_id}.html"))
 
-    soup = BeautifulSoup(response.text, "html.parser")
+    form = list_parser.get_submit_form(response.text)
 
-    tests = soup.select('input[name="test[id][]"]')
-    tests = [t.get("value") for t in tests if t.get("value") is not None]
-
-    task_set_id = soup.select_one('input[name="test[task_set_id]"]')
-    assert task_set_id is not None
-    task_set_id = task_set_id.get("value")
-
-    student_id = soup.select_one('input[name="test[student_id]"]')
-    assert student_id is not None
-    student_id = student_id.get("value")
-
-    select_test_type = soup.select_one('input[name="select_test_type"]')
-    assert select_test_type is not None
-    select_test_type = select_test_type.get("value")
+    if form is None:
+        logger.debug(
+            "The specified problem has no tests configured on list, no test will be run"
+        )
+        out.println("Problem has no tests to run")
+        return None
 
     data = {
-        "test[task_set_id]": task_set_id,
-        "test[student_id]": student_id,
+        "test[task_set_id]": form.task_set_id,
+        "test[student_id]": form.student_id,
         "test[version]": submit_version,
-        "select_test_type": select_test_type,
-        "test[id][]": tests,
+        "select_test_type": form.select_test_type,
+        "test[id][]": form.tests,
     }
 
     response = session.session.post(

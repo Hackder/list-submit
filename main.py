@@ -1,6 +1,7 @@
 import atexit
 import time
 import sys
+import logging
 
 import list_api
 import out
@@ -20,6 +21,8 @@ atexit.register(exit_handler)
 
 def main():
     options = ui.ok_or_exit(lambda: cli.parse_cli_params(sys.argv))
+    # TODO: Set level from options when new options PR get's merged
+    logging.basicConfig(level=logging.DEBUG)
 
     if options.help:
         cli.print_help_message()
