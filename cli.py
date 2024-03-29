@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 import argparse
 
+import constants
+
 
 @dataclass
 class CliOptions:
@@ -38,6 +40,12 @@ parser.add_argument(
     "--remove",
     action="store",
     help="Remove all files mathing the provided glob pattern",
+)
+parser.add_argument(
+    "-v",
+    "--version",
+    action="version",
+    version=f"%(prog)s {constants.VERSION}",
 )
 
 

@@ -22,16 +22,9 @@ atexit.register(exit_handler)
 
 def main():
     options = ui.ok_or_exit(lambda: cli.parse_cli_params(sys.argv))
-<<<<<<< HEAD
     # TODO: Set level from options when new options PR get's merged
     logging.basicConfig(level=logging.DEBUG)
 
-    if options.help:
-        cli.print_help_message()
-        return
-
-=======
->>>>>>> 95d6b18 (feat: add/remove files glob parsing)
     global_config = config.load_global_config()
 
     if options.auth:
