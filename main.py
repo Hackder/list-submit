@@ -22,6 +22,7 @@ atexit.register(exit_handler)
 
 def main():
     options = ui.ok_or_exit(lambda: cli.parse_cli_params(sys.argv))
+<<<<<<< HEAD
     # TODO: Set level from options when new options PR get's merged
     logging.basicConfig(level=logging.DEBUG)
 
@@ -29,6 +30,8 @@ def main():
         cli.print_help_message()
         return
 
+=======
+>>>>>>> 95d6b18 (feat: add/remove files glob parsing)
     global_config = config.load_global_config()
 
     if options.auth:
@@ -38,8 +41,15 @@ def main():
         global_config.email = email
         global_config.password = password
         config.save_global_config(global_config)
+        exit(0)
 
-    out.println(out.primary("Changed files"), "game_of_life.py, test_game_of_life.py")
+    if options.add is not None:
+        config.add_files_to_project(options.project, options.add)
+        exit(0)
+
+    if options.remove is not None:
+        config.remove_files_from_project(options.project, options.remove)
+        exit(0)
 
     session = ui.display_request(
         "logging in",
