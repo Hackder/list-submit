@@ -28,7 +28,7 @@ jobs:
         run: black --check .
 
       - name: Type Check with Mypy
-        run: mypy --strict
+        run: mypy --strict .
 
       - name: Run Tests
         run: |
