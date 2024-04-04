@@ -22,8 +22,8 @@ atexit.register(exit_handler)
 
 def main():
     options = ui.ok_or_exit(lambda: cli.parse_cli_params(sys.argv))
-    # TODO: Set level from options when new options PR get's merged
-    logging.basicConfig(level=logging.DEBUG)
+
+    logging.basicConfig(level=options.log_level)
 
     global_config = config.load_global_config()
 

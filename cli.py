@@ -11,6 +11,7 @@ class CliOptions:
     project: str | None = ""
     add: str | None = ""
     remove: str | None = ""
+    log_level: str = "WARNING"
 
 
 DESCRIPTION = """
@@ -42,6 +43,13 @@ parser.add_argument(
     help="Remove all files mathing the provided glob pattern",
 )
 parser.add_argument(
+    "--log-level",
+    action="store",
+    default="WARNING",
+    help="Set the logging level",
+    choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+)
+parser.add_argument(
     "-v",
     "--version",
     action="version",
@@ -60,4 +68,5 @@ def parse_cli_params(argv: list[str]) -> CliOptions:
         project=options.project,
         add=options.add,
         remove=options.remove,
+        log_level=options.log_level,
     )
