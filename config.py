@@ -1,11 +1,11 @@
-import configparser
+import tomlkit
 import os
 import glob
 
 from dataclasses import dataclass
 import constants
 
-config_location = os.path.join(os.path.dirname(__file__), "global_config.ini")
+config_location = os.path.join(os.path.dirname(__file__), "global-config.toml")
 
 
 @dataclass
@@ -25,28 +25,42 @@ def load_global_config() -> GlobalConfig:
     if not os.path.exists(config_location):
         return default_global_config()
 
-    parser = configparser.ConfigParser()
-    parser.read(config_location)
+    with open(config_location) as f:
+        contents = f.read()
+        config = tomlkit.parse(contents)
 
-    version = parser.get("global", "version")
+    version = config["version"]
     if version != constants.VERSION:
         raise ValueError(
             f"Config version mismatch (running list-submit {constants.VERSION}, got config from {version})"
         )
 
-    return GlobalConfig(
-        email=parser.get("auth", "email"),
-        password=parser.get("auth", "password"),
-    )
+    auth = config.get("auth")
+    email = auth and auth.get("email")
+    password = auth and auth.get("password")
+
+    return GlobalConfig(email=email, password=password)
 
 
 def save_global_config(config: GlobalConfig) -> None:
-    parser = configparser.ConfigParser()
-    parser["global"] = {"version": constants.VERSION}
-    parser["auth"] = {"email": config.email, "password": config.password}
+    if os.path.exists(config_location):
+        with open(config_location) as f:
+            contents = f.read()
+            file = tomlkit.parse(contents)
+    else:
+        with open(
+            os.path.join(os.path.dirname(__file__), "templates", "global-config.toml")
+        ) as f:
+            contents = f.read()
+            file = tomlkit.parse(contents)
 
+    file["version"] = constants.VERSION
+    file["auth"]["email"] = config.email
+    file["auth"]["password"] = config.password
+
+    serialized = tomlkit.dumps(file)
     with open(config_location, "w") as f:
-        parser.write(f)
+        f.write(serialized)
 
 
 def add_files_to_project(project: str | None, pattern: str) -> None:
