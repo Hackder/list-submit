@@ -47,7 +47,44 @@ def ok_or_exit[T](task: Callable[[], T], code: int = 1) -> T:
         exit(code)
 
 
-def prompt(message: str, hide_input: bool = False) -> str:
-    if hide_input:
-        return getpass(out.bold(message))
-    return input(out.bold(message))
+def prompt(
+    message: str,
+    hide_input: bool = False,
+    validator: Callable[[str], bool] = lambda _: True,
+) -> str:
+    while True:
+        if hide_input:
+            value = getpass(out.bold(message))
+        else:
+            value = input(out.bold(message))
+
+        if validator(value):
+            return value
+
+
+def select_from_list[T](items: list[T], display: Callable[[T], str]) -> T:
+    for i, item in enumerate(items):
+        out.println(out.secondary(f"{i + 1}."), display(item))
+
+    while True:
+        input = prompt("Select: ")
+        try:
+            index = int(input) - 1
+            if index < 0 or index >= len(items):
+                raise ValueError
+        except ValueError:
+            out.error(f"Invalid selection, pick number from 1 to {len(items)}")
+            continue
+
+        return items[index]
+
+
+def confirm(message: str) -> bool:
+    while True:
+        value = prompt(f"{message} [y/n]: ")
+        if value == "y":
+            return True
+        elif value == "n":
+            return False
+        else:
+            out.error("Invalid input, please enter 'y' or 'n'")
