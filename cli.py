@@ -6,7 +6,6 @@ import constants
 
 @dataclass
 class CliOptions:
-    force: bool = False
     auth: bool = False
     project: str | None = ""
     add: str | None = ""
@@ -26,7 +25,6 @@ parser = argparse.ArgumentParser(
 )
 
 parser.add_argument("project", nargs="?", default=None)
-parser.add_argument("-f", "--force", action="store_true", help="Force the operation")
 parser.add_argument(
     "--auth", action="store_true", help="Retype your L.I.S.T. email and password"
 )
@@ -63,7 +61,6 @@ def parse_cli_params(argv: list[str]) -> CliOptions:
 
     options = parser.parse_args(argv)
     return CliOptions(
-        force=options.force,
         auth=options.auth,
         project=options.project,
         add=options.add,
