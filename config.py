@@ -143,6 +143,7 @@ def find_project_config(name: str | None) -> str | None:
         new_dir = os.path.dirname(dir)
         if new_dir == dir:
             break
+        dir = new_dir
 
     logger.debug("No config file found in all parent directories")
     return None
