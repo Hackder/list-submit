@@ -1,4 +1,4 @@
-![list-submit](https://github.com/Hackder/list-submit/blob/first-readme/docs/images/list-submit-logo.png)
+![list-submit](https://github.com/Hackder/list-submit/blob/main/docs/images/list-submit-logo.png)
 
 list-submit is a simple cli utility, that automates submiting problem solutions
 to the L.I.S.T. online platform, used by the Faculty of Mathematics and Informatics
