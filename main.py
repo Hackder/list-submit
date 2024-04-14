@@ -40,7 +40,7 @@ def new_local_config(
 
     cfg = config.ProjectConfig(
         version=config.constants.VERSION,
-        task=config.TaskConfig(
+        problem=config.ProblemConfig(
             problem_id=problem.id,
             course_id=course.id,
             # TODO: Run automatic project detection to prefill files
@@ -81,10 +81,10 @@ def main():
         problems = ui.display_request(
             f"problems",
             lambda: list_api.get_problems_for_course(
-                session, project_config.task.course_id
+                session, project_config.problem.course_id
             ),
         )
-        problems = [p for p in problems if p.id == project_config.task.problem_id]
+        problems = [p for p in problems if p.id == project_config.problem.problem_id]
 
         if len(problems) == 0:
             out.error(
@@ -102,7 +102,7 @@ def main():
         config.remove_files_from_project(options.project, options.remove)
         exit(0)
 
-    if len(project_config.task.files) == 0:
+    if len(project_config.problem.files) == 0:
         out.error(
             "No files to submit, the files list is empty\nAdd files using the --add flag"
         )

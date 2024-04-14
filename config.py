@@ -88,7 +88,7 @@ project_config_name = "list-submit.toml"
 
 
 @dataclass
-class TaskConfig:
+class ProblemConfig:
     course_id: int
     problem_id: int
     files: list[str]
@@ -97,7 +97,7 @@ class TaskConfig:
 @dataclass
 class ProjectConfig:
     version: str
-    task: TaskConfig
+    problem: ProblemConfig
 
 
 def find_project_config(name: str | None) -> str | None:
@@ -160,19 +160,19 @@ def load_project_config(config_path: str):
             f"Config version mismatch (running list-submit {constants.VERSION}, got config from {version})"
         )
 
-    problem_id = cfg["task"]["problem_id"]
+    problem_id = cfg["problem"]["problem_id"]
     if not isinstance(problem_id, tomlkit.items.Integer):
         raise ValueError(
             "Problem ID not found in project config file, or not an integer"
         )
 
-    course_id = cfg["task"]["course_id"]
+    course_id = cfg["problem"]["course_id"]
     if not isinstance(course_id, tomlkit.items.Integer):
         raise ValueError(
             "Course ID not found in project config file, or not an integer"
         )
 
-    files = cfg["task"]["files"]
+    files = cfg["problem"]["files"]
     if not isinstance(files, tomlkit.items.Array):
         raise ValueError("Files not found in project config file, or not an array")
     if not all(isinstance(f, tomlkit.items.String) for f in files):
@@ -181,10 +181,10 @@ def load_project_config(config_path: str):
     logger.debug("Project config loaded from: %s", config_path)
     return ProjectConfig(
         version=version,
-        task=TaskConfig(
-            problem_id=cfg["task"]["problem_id"],
-            course_id=cfg["task"]["course_id"],
-            files=cfg["task"]["files"],
+        problem=ProblemConfig(
+            problem_id=cfg["problem"]["problem_id"],
+            course_id=cfg["problem"]["course_id"],
+            files=cfg["problem"]["files"],
         ),
     )
 
@@ -231,9 +231,9 @@ def save_project_config(config: ProjectConfig, path: str | None = None):
         current_config = __default_project_config_toml()
 
     current_config["version"] = constants.VERSION
-    current_config["task"]["course_id"] = config.task.course_id
-    current_config["task"]["problem_id"] = config.task.problem_id
-    current_config["task"]["files"] = config.task.files
+    current_config["problem"]["course_id"] = config.problem.course_id
+    current_config["problem"]["problem_id"] = config.problem.problem_id
+    current_config["problem"]["files"] = config.problem.files
 
     new_content = tomlkit.dumps(current_config)
     with open(path, "w") as f:
