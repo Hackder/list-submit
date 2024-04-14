@@ -47,7 +47,15 @@ def ok_or_exit[T](task: Callable[[], T], code: int = 1) -> T:
         exit(code)
 
 
-def prompt(message: str, hide_input: bool = False) -> str:
-    if hide_input:
-        return getpass(out.bold(message))
-    return input(out.bold(message))
+def prompt(
+    message: str,
+    hide_input: bool = False,
+    validator: Callable[[str], bool] = lambda _: True,
+) -> str:
+    while True:
+        if hide_input:
+            value = getpass(out.bold(message))
+        value = input(out.bold(message))
+
+        if validator(value):
+            return value
