@@ -2,9 +2,12 @@ import tomlkit
 import os
 import glob
 import queue
+import logging
 
 from dataclasses import dataclass
 import constants
+
+logger = logging.getLogger(__name__)
 
 config_location = os.path.join(os.path.dirname(__file__), "global-config.toml")
 
@@ -49,6 +52,8 @@ def load_global_config() -> GlobalConfig:
     email = auth and auth.get("email")
     password = auth and auth.get("password")
 
+    logger.debug("Parsed global config file from: %s", config_location)
+
     return GlobalConfig(email=email, password=password)
 
 
@@ -58,6 +63,10 @@ def save_global_config(config: GlobalConfig) -> None:
             contents = f.read()
             file = tomlkit.parse(contents)
     else:
+        logger.debug(
+            "No global config file in: %s, creating new one from template",
+            config_location,
+        )
         with open(
             os.path.join(os.path.dirname(__file__), "templates", "global-config.toml")
         ) as f:
@@ -71,6 +80,8 @@ def save_global_config(config: GlobalConfig) -> None:
     serialized = tomlkit.dumps(file)
     with open(config_location, "w") as f:
         f.write(serialized)
+
+    logger.debug("Saved global config file to: %s", config_location)
 
 
 project_config_name = "list-submit.toml"
@@ -119,19 +130,27 @@ def find_project_config(name: str | None) -> str | None:
             listing = os.listdir(dir)
             has_config_file = project_config_name in listing
             if os.path.dirname(dir) == name and has_config_file:
-                return os.path.join(dir, project_config_name)
+                project_directory = os.path.join(dir, project_config_name)
+                logger.debug(
+                    "Found project with name: %s, directory: %s",
+                    name,
+                    project_directory,
+                )
+                return project_directory
 
             directories = [d for d in listing if os.path.isdir(d)]
             for d in directories:
                 q.put(d)
 
+        logger.debug("Project directory with name %s not found", name)
         return None
 
-    dir = os.getcwd()
+    dir = os.path.join(os.getcwd(), "never_used")
     while (dir := os.path.dirname(dir)) != dir:
         if project_config_name in os.listdir(dir):
             return os.path.join(dir, project_config_name)
 
+    logger.debug("No config file found in all parent directories")
     return None
 
 
@@ -146,6 +165,7 @@ def load_project_config(config_path: str):
             f"Config version mismatch (running list-submit {constants.VERSION}, got config from {version})"
         )
 
+    logger.debug("Project config loaded from: %s", config_path)
     return ProjectConfig(
         version=version,
         task=TaskConfig(
@@ -157,6 +177,7 @@ def load_project_config(config_path: str):
 
 
 def __default_project_config_toml():
+    logger.debug("Loading default project config toml template")
     template_path = os.path.join(
         os.path.dirname(__file__), "templates", "project-config.toml"
     )
@@ -184,18 +205,28 @@ def save_project_config(config: ProjectConfig, path: str | None = None):
             contents = f.read()
             current_config = tomlkit.parse(contents)
     else:
+        path = os.path.join(os.getcwd(), project_config_name)
         current_config = __default_project_config_toml()
 
     # TODO: This breaks any comments or structure user has,
     # Future version should include a betters migration solution
     version = current_config["version"]
     if version != constants.VERSION:
+        logger.debug(
+            "Config version missmatch while saving project config to: %s", path
+        )
         current_config = __default_project_config_toml()
 
     current_config["version"] = constants.VERSION
     current_config["task"]["course_id"] = config.task.course_id
     current_config["task"]["problem_id"] = config.task.problem_id
     current_config["task"]["files"] = config.task.files
+
+    new_content = tomlkit.dumps(current_config)
+    with open(path, "w") as f:
+        f.write(new_content)
+
+    logger.debug("Saved config file to: %s")
 
 
 def add_files_to_project(project: str | None, pattern: str) -> None:
