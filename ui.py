@@ -77,3 +77,14 @@ def select_from_list[T](items: list[T], display: Callable[[T], str]) -> T:
             continue
 
         return items[index]
+
+
+def confirm(message: str) -> bool:
+    while True:
+        value = prompt(f"{message} [y/n]: ")
+        if value == "y":
+            return True
+        elif value == "n":
+            return False
+        else:
+            out.error("Invalid input, please enter 'y' or 'n'")

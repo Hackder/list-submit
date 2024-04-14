@@ -3,6 +3,8 @@ import atexit
 import time
 import sys
 import logging
+import glob
+import os
 
 import list_api
 import out
@@ -72,12 +74,12 @@ def main():
         lambda: list_api.login(global_config.email, global_config.password),
     )
 
-    project_location = config.find_project_config(options.project)
-    if project_location is None:
+    project_config_location = config.find_project_config(options.project)
+    if project_config_location is None:
         project_config, problem = new_local_config(session)
         config.save_project_config(project_config)
     else:
-        project_config = config.load_project_config(project_location)
+        project_config = config.load_project_config(project_config_location)
         problems = ui.display_request(
             f"problems",
             lambda: list_api.get_problems_for_course(
@@ -94,12 +96,50 @@ def main():
 
         problem = problems[0]
 
+    project_directory = (
+        os.path.dirname(project_config_location)
+        if project_config_location is not None
+        else os.getcwd()
+    )
+
+    def get_relative_glob(glob_pattern: str, perspective_dir: str) -> list[str]:
+        """
+        Find all files matching the glob patter starting from cwd
+        and returns their paths relative to the provided directory
+        """
+        files = glob.glob(glob_pattern, recursive=True, root_dir=None)
+        files = [os.path.abspath(p) for p in files]
+        files = [os.path.relpath(p, perspective_dir) for p in files]
+        return files
+
     if options.add is not None:
-        config.add_files_to_project(options.project, options.add)
+        files = get_relative_glob(options.add, project_directory)
+
+        for i in range(len(files)):
+            out.println(out.primary("Adding"), files[i])
+
+        if len(files) > 3:
+            ui.confirm(
+                f"You are about to add these {len(files)} files to the project. Continue?"
+            )
+
+        for file in files:
+            if file not in project_config.problem.files:
+                project_config.problem.files.append(file)
+
+        config.save_project_config(project_config, project_config_location)
         exit(0)
 
     if options.remove is not None:
-        config.remove_files_from_project(options.project, options.remove)
+        files = get_relative_glob(options.remove, project_directory)
+        for i in range(len(files)):
+            out.println(out.primary("Removing"), files[i])
+
+        project_config.problem.files = list(
+            filter(lambda f: f not in files, project_config.problem.files)
+        )
+
+        config.save_project_config(project_config, project_config_location)
         exit(0)
 
     if len(project_config.problem.files) == 0:
