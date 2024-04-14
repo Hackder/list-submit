@@ -1,3 +1,4 @@
+from __future__ import annotations
 import tomlkit
 import os
 import glob
@@ -16,15 +17,6 @@ config_location = os.path.join(os.path.dirname(__file__), "global-config.toml")
 class GlobalConfig:
     email: str
     password: str
-
-    def __init__(self, email, password):
-        if type(email) is not str:
-            raise Exception(f"Invalid email in config file: {email}, expected string")
-
-        if type(password) is not str:
-            raise Exception(
-                f"Invalid password in config file: {password}, expected string"
-            )
 
 
 def default_global_config() -> GlobalConfig:
@@ -52,9 +44,17 @@ def load_global_config() -> GlobalConfig:
     email = auth and auth.get("email")
     password = auth and auth.get("password")
 
+    if not isinstance(email, tomlkit.items.String):
+        raise ValueError("Email not found in global config file, or email not a string")
+
+    if not isinstance(password, tomlkit.items.String):
+        raise ValueError(
+            "Password not found in global config file, or email not a string"
+        )
+
     logger.debug("Parsed global config file from: %s", config_location)
 
-    return GlobalConfig(email=email, password=password)
+    return GlobalConfig(email=email.value, password=password.value)
 
 
 def save_global_config(config: GlobalConfig) -> None:
@@ -92,16 +92,6 @@ class TaskConfig:
     course_id: int
     problem_id: int
     files: list[str]
-
-    def __init__(self, course_id: int, problem_id: int, files: list[str]):
-        if not (type(course_id) is int and course_id > 0):
-            raise Exception(f"Invalid course_id in config file: {course_id}")
-
-        if not (type(problem_id) is int and problem_id > 0):
-            raise Exception(f"Invalid problem_id in config file: {problem_id}")
-
-        if not (type(files) == "list" and all(type(item) is str for item in files)):
-            raise Exception(f"Not all files specified are strings: {files}")
 
 
 @dataclass
@@ -145,10 +135,14 @@ def find_project_config(name: str | None) -> str | None:
         logger.debug("Project directory with name %s not found", name)
         return None
 
-    dir = os.path.join(os.getcwd(), "never_used")
-    while (dir := os.path.dirname(dir)) != dir:
+    dir = os.getcwd()
+    while True:
         if project_config_name in os.listdir(dir):
             return os.path.join(dir, project_config_name)
+
+        new_dir = os.path.dirname(dir)
+        if new_dir == dir:
+            break
 
     logger.debug("No config file found in all parent directories")
     return None
@@ -164,6 +158,24 @@ def load_project_config(config_path: str):
         raise ValueError(
             f"Config version mismatch (running list-submit {constants.VERSION}, got config from {version})"
         )
+
+    problem_id = cfg["task"]["problem_id"]
+    if not isinstance(problem_id, tomlkit.items.Integer):
+        raise ValueError(
+            "Problem ID not found in project config file, or not an integer"
+        )
+
+    course_id = cfg["task"]["course_id"]
+    if not isinstance(course_id, tomlkit.items.Integer):
+        raise ValueError(
+            "Course ID not found in project config file, or not an integer"
+        )
+
+    files = cfg["task"]["files"]
+    if not isinstance(files, tomlkit.items.Array):
+        raise ValueError("Files not found in project config file, or not an array")
+    if not all(isinstance(f, tomlkit.items.String) for f in files):
+        raise ValueError("Files not an array of strings")
 
     logger.debug("Project config loaded from: %s", config_path)
     return ProjectConfig(
