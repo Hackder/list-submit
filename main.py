@@ -167,7 +167,11 @@ def submit_solution(
 
 if __name__ == "__main__":
     start = time.time()
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        out.println(out.error("Interrupted"))
+        exit(1)
     end = time.time()
 
     out.println(out.primary("Finished"), f"in {end - start:.2f} seconds")
