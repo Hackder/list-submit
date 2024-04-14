@@ -76,6 +76,7 @@ def select_from_list[T](items: list[T], display: Callable[[T], str]) -> T:
             out.error(f"Invalid selection, pick number from 1 to {len(items)}")
             continue
 
+        out.println(out.bold("Selected"), display(items[index]))
         return items[index]
 
 
