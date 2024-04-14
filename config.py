@@ -201,7 +201,7 @@ def __default_project_config_toml():
     return current_config
 
 
-def save_project_config(config: ProjectConfig, path: str | None = None):
+def save_project_config(config: ProjectConfig, path: str | None):
     """
     Saves the config file to the specified location.
     If no location is provided uses the default location,

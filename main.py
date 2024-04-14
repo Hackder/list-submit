@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 import atexit
+import io
 import time
 import sys
 import logging
 import glob
 import os
+import zipfile
 
 import list_api
 import out
@@ -77,7 +79,7 @@ def main():
     project_config_location = config.find_project_config(options.project)
     if project_config_location is None:
         project_config, problem = new_local_config(session)
-        config.save_project_config(project_config)
+        config.save_project_config(project_config, None)
     else:
         project_config = config.load_project_config(project_config_location)
         problems = ui.display_request(
@@ -148,7 +150,7 @@ def main():
         )
         exit(1)
 
-    out.println(out.primary("Submitting"), "solution for", out.bold(problem.name))
+    submit_solution(session, problem, project_config, project_directory)
 
     # with open("solution.zip", "rb") as f:
     #     byte_data = f.read()
@@ -161,8 +163,23 @@ def submit_solution(
     session: list_api.ListSession,
     problem: list_api.Problem,
     project_config: config.ProjectConfig,
+    project_directory: str,
 ):
-    pass
+    out.println(out.primary("Submitting"), "solution for", out.bold(problem.name))
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+        for file in project_config.problem.files:
+            abs_path = os.path.join(project_directory, file)
+            zip_file.write(abs_path, os.path.basename(abs_path))
+
+    submit = ui.display_request(
+        "submitting solution",
+        lambda: list_api.submit_solution(session, problem.id, zip_buffer.getvalue()),
+    )
+    ui.display_request(
+        "running tests",
+        lambda: list_api.run_test_for_submit(session, problem.id, submit.version),
+    )
 
 
 if __name__ == "__main__":
