@@ -1,5 +1,6 @@
 __pycache__
 *.zip
 global-config.toml
+!templates/global-config.toml
 .DS_Store
 venv/
