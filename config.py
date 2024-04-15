@@ -91,6 +91,7 @@ project_config_name = "list-submit.toml"
 class ProblemConfig:
     course_id: int
     problem_id: int
+    problem_name: str
     files: list[str]
 
 
@@ -166,6 +167,12 @@ def load_project_config(config_path: str):
             "Problem ID not found in project config file, or not an integer"
         )
 
+    problem_name = cfg["problem"]["problem_name"]
+    if not isinstance(problem_name, tomlkit.items.String):
+        raise ValueError(
+            "Problem name not found in project config file, or not a string"
+        )
+
     course_id = cfg["problem"]["course_id"]
     if not isinstance(course_id, tomlkit.items.Integer):
         raise ValueError(
@@ -183,6 +190,7 @@ def load_project_config(config_path: str):
         version=version,
         problem=ProblemConfig(
             problem_id=cfg["problem"]["problem_id"],
+            problem_name=cfg["problem"]["problem_name"],
             course_id=cfg["problem"]["course_id"],
             files=cfg["problem"]["files"],
         ),
@@ -233,6 +241,7 @@ def save_project_config(config: ProjectConfig, path: str | None):
     current_config["version"] = constants.VERSION
     current_config["problem"]["course_id"] = config.problem.course_id
     current_config["problem"]["problem_id"] = config.problem.problem_id
+    current_config["problem"]["problem_name"] = config.problem.problem_name
     current_config["problem"]["files"] = config.problem.files
 
     new_content = tomlkit.dumps(current_config)

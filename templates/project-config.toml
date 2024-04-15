@@ -5,6 +5,7 @@ version = "0.0.1"
 [problem]
 course_id = -1
 problem_id = -1
+problem_name = ""
 
 # Relative paths to the files that will
 # be included in the zip archive

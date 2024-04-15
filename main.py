@@ -74,6 +74,7 @@ def new_local_config(
         version=config.constants.VERSION,
         problem=config.ProblemConfig(
             problem_id=problem.id,
+            problem_name=problem.name,
             course_id=course.id,
             files=files,
         ),
@@ -98,34 +99,19 @@ def main():
         config.save_global_config(global_config)
         exit(0)
 
-    session = ui.display_request(
-        "logging in",
-        lambda: list_api.login(global_config.email, global_config.password),
-    )
-
+    session = None
     project_config_location = config.find_project_config(options.project)
     new_config = False
     if project_config_location is None:
+        session = ui.display_request(
+            "logging in",
+            lambda: list_api.login(global_config.email, global_config.password),
+        )
         project_config, problem = new_local_config(session)
         new_config = True
         config.save_project_config(project_config, None)
     else:
         project_config = config.load_project_config(project_config_location)
-        problems = ui.display_request(
-            f"problems",
-            lambda: list_api.get_problems_for_course(
-                session, project_config.problem.course_id
-            ),
-        )
-        problems = [p for p in problems if p.id == project_config.problem.problem_id]
-
-        if len(problems) == 0:
-            out.error(
-                "Problem stored in config not found. It is probably after deadline."
-            )
-            exit(1)
-
-        problem = problems[0]
 
     project_directory = (
         os.path.dirname(project_config_location)
@@ -173,6 +159,12 @@ def main():
         config.save_project_config(project_config, project_config_location)
         exit(0)
 
+    if session is None:
+        session = ui.display_request(
+            "logging in",
+            lambda: list_api.login(global_config.email, global_config.password),
+        )
+
     if len(project_config.problem.files) == 0:
         out.error(
             "No files to submit, the files list is empty\nAdd files using the --add flag"
@@ -186,7 +178,11 @@ def main():
 
     # Submit the solution
 
-    out.println(out.primary("Submitting"), "solution for", out.bold(problem.name))
+    out.println(
+        out.primary("Submitting"),
+        "solution for",
+        out.bold(project_config.problem.problem_name),
+    )
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
         for file in project_config.problem.files:
@@ -195,16 +191,20 @@ def main():
 
     submit = ui.display_request(
         "submitting solution",
-        lambda: list_api.submit_solution(session, problem.id, zip_buffer.getvalue()),
+        lambda: list_api.submit_solution(
+            session, project_config.problem.problem_id, zip_buffer.getvalue()
+        ),
     )
     ui.display_request(
         "running tests",
-        lambda: list_api.run_test_for_submit(session, problem.id, submit.version),
+        lambda: list_api.run_test_for_submit(
+            session, project_config.problem.problem_id, submit.version
+        ),
     )
 
     # Poll for test results
 
-    form = list_api.get_submit_form(session, problem.id)
+    form = list_api.get_submit_form(session, project_config.problem.problem_id)
     if form is None:
         out.println("Problem has no tests to watch")
         exit(0)
@@ -213,7 +213,7 @@ def main():
         start = datetime.now()
         while True:
             queue = list_api.get_student_test_queue(
-                session, problem.id, int(form.student_id)
+                session, project_config.problem.problem_id, int(form.student_id)
             )
             closest = min(queue, key=lambda t: abs(start - t.start_time))
             delta = abs(start - closest.start_time)
