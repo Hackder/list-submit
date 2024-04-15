@@ -88,7 +88,6 @@ def main():
     options = ui.ok_or_exit(lambda: cli.parse_cli_params(sys.argv))
 
     logging.basicConfig(level=options.log_level)
-
     global_config = config.load_global_config()
 
     if options.auth:
@@ -97,8 +96,18 @@ def main():
 
         global_config.email = email
         global_config.password = password
+
         config.save_global_config(global_config)
         exit(0)
+
+    if global_config.email == "" or global_config.password == "":
+        out.println("No credentials stored in the global config file")
+        out.println("To store your credentials, run the command with the --auth flag")
+        out.println("otherwise, you will be prompted for your credentials every time")
+        email = ui.prompt("Email: ")
+        password = ui.prompt("Password: ", hide_input=True)
+        global_config.email = email
+        global_config.password = password
 
     session = None
     project_config_location = config.find_project_config(options.project)
