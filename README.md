@@ -5,8 +5,69 @@ to the L.I.S.T. online platform, used by the Faculty of Mathematics and Informat
 Comenius University in Bratislava.
 
 # Installation
-*Coming soon*
 
+## MacOS / Linux
+
+For easier installation, you can use the provided installation script.
+```bash
+git clone https://github.com/Hackder/list-submit.git
+cd list-submit
+chmod +x install.sh
+./install.sh
+```
+
+## Windows
+
+For Windows, you can use the provided installation script.
+```powershell
+git clone https://github.com/Hackder/list-submit.git
+cd list-submit
+powershell -ExecutionPolicy Bypass -File install.ps1
+```
+
+## Manual installation
+
+Make sure you have at least python 3.12 installed. You can check your python version
+by running:
+```bash
+python3 --version
+```
+
+Git clone the repository:
+```bash
+git clone https://github.com/Hackder/list-submit.git
+```
+
+Navigate to the cloned directory:
+```bash
+cd list-submit
+```
+
+We recommned using a virtual environment to install the package. You can create a
+virtual environment by running:
+```bash
+python3 -m venv venv
+```
+
+Activate the virtual environment:
+```bash
+source venv/bin/activate
+```
+
+Install the dependencies:
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+Create an alias for the list-submit utility:
+```bash
+alias lsbm="$(pwd)/venv/bin/python3 $(pwd)/list-submit.py"
+```
+
+You can add this alias to your `.bashrc` or `.zshrc` file to make it permanent:
+```bash
+echo "alias lsbm=\"$(pwd)/venv/bin/python3 $(pwd)/list-submit.py\"" >> ~/.bashrc
+```
 
 # Quick start
 
