@@ -14,6 +14,18 @@ python3 -m venv venv
 .\venv\Scripts\python.exe -m pip install -r requirements.txt
 
 # Create alias for script execution
-Write-Host "To register the alias, add the following line to your PowerShell profile:"
-Write-Host "New-Alias lsbm -Value `"${pwd}\venv\Scripts\python.exe ${pwd}\main.py`""
+Write-Host ""
+Write-Host ""
+Write-Host ""
+Write-Host "To register the alias, run the following command:"
+Write-Host "notepad \$PROFILE"
+Write-Host ""
+Write-Host "Add the following lines to the end of the file:"
+Write-Host """
+function runlsbm {
+  $(pwd)\venv\Scripts\python.exe $(pwd)\main.py @args
+}
+
+Set-Alias lsbm runlsbm
+"""
 
