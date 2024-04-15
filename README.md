@@ -12,8 +12,7 @@ For easier installation, you can use the provided installation script.
 ```bash
 git clone https://github.com/Hackder/list-submit.git
 cd list-submit
-chmod +x install.sh
-./install.sh
+source install.sh
 ```
 
 ## Windows
