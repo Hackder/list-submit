@@ -1,4 +1,7 @@
+from __future__ import annotations
+from typing import Literal
 import requests
+from datetime import datetime
 from dataclasses import dataclass
 
 
@@ -65,3 +68,31 @@ class Submit:
     version: int
     name: str
     problem_id: int
+
+
+@dataclass
+class Test:
+    id: int
+    start_time: datetime
+    end_time: datetime | None
+
+
+@dataclass
+class SubmitForm:
+    tests: list[str]
+    task_set_id: str
+    student_id: str
+    select_test_type: str
+
+
+@dataclass
+class TestResult:
+    total_points: float
+    problems: list[TestResultProblem]
+
+
+@dataclass
+class TestResultProblem:
+    name: str
+    percentage: float
+    points: float

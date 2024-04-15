@@ -1,8 +1,9 @@
+from datetime import datetime
 import unittest
 import os
 
 import list_api.list_parser as list_parser
-from list_api.models import Course, Problem, Submit
+from list_api.models import Course, Problem, Submit, TestResult, TestResultProblem
 
 
 class TestListParserCourses(unittest.TestCase):
@@ -189,4 +190,74 @@ class TestListParserSubmitForm(unittest.TestCase):
         self.assertEqual(
             submit_form,
             None,
+        )
+
+
+class TestListParserTestQueue(unittest.TestCase):
+    def test_two_finished(self):
+        with open(
+            os.path.join(os.path.dirname(__file__), "tests_two_finished.html")
+        ) as f:
+            html = f.read()
+
+        tests = list_parser.get_test_queue(html)
+
+        self.assertEqual(
+            tests,
+            [
+                list_parser.Test(
+                    id=116941,
+                    start_time=datetime(2024, 4, 15, 10, 31, 48),
+                    end_time=datetime(2024, 4, 15, 10, 31, 50),
+                ),
+                list_parser.Test(
+                    id=116939,
+                    start_time=datetime(2024, 4, 15, 10, 23, 26),
+                    end_time=datetime(2024, 4, 15, 10, 23, 28),
+                ),
+            ],
+        )
+
+    def test_one_unfinished(self):
+        with open(
+            os.path.join(os.path.dirname(__file__), "tests_one_unfinished.html")
+        ) as f:
+            html = f.read()
+
+        tests = list_parser.get_test_queue(html)
+
+        self.assertEqual(
+            tests,
+            [
+                list_parser.Test(
+                    id=116939,
+                    start_time=datetime(2024, 4, 15, 10, 23, 26),
+                    end_time=datetime(2024, 4, 15, 10, 23, 28),
+                ),
+                list_parser.Test(
+                    id=116941,
+                    start_time=datetime(2024, 4, 15, 10, 31, 48),
+                    end_time=None,
+                ),
+            ],
+        )
+
+
+class ListParserTestResult(unittest.TestCase):
+    def test_one_successful_result(self):
+        with open(
+            os.path.join(os.path.dirname(__file__), "one_successful_test_result.html")
+        ) as f:
+            html = f.read()
+
+        test = list_parser.get_test_result(html)
+
+        self.assertEqual(
+            test,
+            TestResult(
+                total_points=5.0,
+                problems=[
+                    TestResultProblem(name="pprojl 03", points=5.0, percentage=100.0)
+                ],
+            ),
         )

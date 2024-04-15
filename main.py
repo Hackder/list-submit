@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import atexit
+from datetime import datetime
 import io
 import time
 import sys
@@ -183,21 +184,8 @@ def main():
     ):
         exit(0)
 
-    submit_solution(session, problem, project_config, project_directory)
+    # Submit the solution
 
-    # with open("solution.zip", "rb") as f:
-    #     byte_data = f.read()
-    #     list_api.submit_solution(session, 5479, byte_data)
-
-    # list_api.run_test_for_submit(session, 5479, 2)
-
-
-def submit_solution(
-    session: list_api.ListSession,
-    problem: list_api.Problem,
-    project_config: config.ProjectConfig,
-    project_directory: str,
-):
     out.println(out.primary("Submitting"), "solution for", out.bold(problem.name))
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
@@ -213,6 +201,47 @@ def submit_solution(
         "running tests",
         lambda: list_api.run_test_for_submit(session, problem.id, submit.version),
     )
+
+    # Poll for test results
+
+    form = list_api.get_submit_form(session, problem.id)
+    if form is None:
+        out.println("Problem has no tests to watch")
+        exit(0)
+
+    def wait_for_results():
+        start = datetime.now()
+        while True:
+            queue = list_api.get_student_test_queue(
+                session, problem.id, int(form.student_id)
+            )
+            closest = min(queue, key=lambda t: abs(start - t.start_time))
+            delta = abs(start - closest.start_time)
+            if delta.seconds > 2:
+                time.sleep(0.5)
+                continue
+
+            if closest.end_time is not None:
+                break
+            time.sleep(0.5)
+
+        return closest.id
+
+    test_id = ui.display_request("waiting for results", wait_for_results)
+
+    test_result = ui.display_request(
+        "getting test results", lambda: list_api.get_test_result(session, test_id)
+    )
+
+    out.println(out.bold(f"Total points: {test_result.total_points}"))
+
+    max_len = max(map(lambda p: len(p.name), test_result.problems), default=0)
+    for problem in test_result.problems:
+        out.println(
+            problem.name.ljust(max_len + 5, " "),
+            f"points: {out.bold(str(problem.points))}",
+            f"percent: {out.bold(str(problem.percentage))}",
+        )
 
 
 if __name__ == "__main__":
