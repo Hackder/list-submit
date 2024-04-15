@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Literal
 from getpass import getpass
 
 import time
@@ -80,12 +80,16 @@ def select_from_list[T](items: list[T], display: Callable[[T], str]) -> T:
         return items[index]
 
 
-def confirm(message: str) -> bool:
+def confirm(message: str, default: Literal["y", "n"] | None = None) -> bool:
     while True:
-        value = prompt(f"{message} [y/n]: ")
+        y = "Y" if default == "y" else "y"
+        n = "N" if default == "n" else "n"
+        value = prompt(f"{message} [{y}/{n}]: ").lower()
         if value == "y":
             return True
         elif value == "n":
             return False
+        elif value == "" and default is not None:
+            return default == "y"
         else:
             out.error("Invalid input, please enter 'y' or 'n'")
