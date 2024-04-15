@@ -1,5 +1,5 @@
 import requests
-from .models import Course, Problem, Submit, ListSession
+from .models import Course, Problem, Submit, ListSession, Test, SubmitForm, TestResult
 import logging
 
 import out
@@ -105,14 +105,9 @@ def submit_solution(
 def run_test_for_submit(
     session: ListSession, problem_id: int, submit_version: int
 ) -> None:
-    response = session.session.get(__url(f"/tasks/task/{problem_id}.html"))
-
-    form = list_parser.get_submit_form(response.text)
+    form = get_submit_form(session, problem_id)
 
     if form is None:
-        logger.debug(
-            "The specified problem has no tests configured on list, no test will be run"
-        )
         out.println("Problem has no tests to run")
         return None
 
@@ -141,6 +136,32 @@ def run_test_for_submit(
     if "status" not in body or body["status"] != True:
         out.error("Failed to parse response", response)
         raise ListApiError("Failed to parse response")
+
+
+def get_submit_form(session: ListSession, problem_id: int) -> SubmitForm | None:
+    response = session.session.get(__url(f"/tasks/task/{problem_id}.html"))
+
+    form = list_parser.get_submit_form(response.text)
+
+    if form is None:
+        logger.debug("The specified problem has no test running form")
+        return None
+
+    return form
+
+
+def get_student_test_queue(
+    session: ListSession, problem_id: int, student_id: int
+) -> list[Test]:
+    response = session.session.get(
+        __url(f"/index.php/fetests/get_student_test_queue/{problem_id}/{student_id}")
+    )
+    return list_parser.get_test_queue(response.text)
+
+
+def get_test_result(session: ListSession, test_id: int) -> TestResult:
+    response = session.session.get(__url(f"/tasks/test_result/{test_id}.html"))
+    return list_parser.get_test_result(response.text)
 
 
 class ListApiError(Exception):

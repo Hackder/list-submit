@@ -1,8 +1,17 @@
 from dataclasses import dataclass
+from datetime import datetime
 import logging
 from bs4 import BeautifulSoup, Tag
 
-from list_api.models import Course, Problem, Submit
+from list_api.models import (
+    Course,
+    Problem,
+    Submit,
+    Test,
+    SubmitForm,
+    TestResult,
+    TestResultProblem,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -134,14 +143,6 @@ def get_submits(html: str, problem_id: int) -> list[Submit]:
     return submits
 
 
-@dataclass
-class SubmitForm:
-    tests: list[str]
-    task_set_id: str
-    student_id: str
-    select_test_type: str
-
-
 def get_submit_form(html: str) -> SubmitForm | None:
     soup = BeautifulSoup(html, "html.parser")
 
@@ -170,3 +171,56 @@ def get_submit_form(html: str) -> SubmitForm | None:
         student_id=str(student_id),
         select_test_type=str(select_test_type),
     )
+
+
+def get_test_queue(html: str) -> list[Test]:
+    soup = BeautifulSoup(html, "html.parser")
+    test_elements = soup.select("tbody tr")
+    if len(test_elements) == 0:
+        return []
+
+    def parse_test(element) -> Test:
+        id_element = element.select_one("td > a")
+        # Grab the id from the last part of the URL (...asdf/123.html)
+        href = id_element.get("href")
+        id = int(href.split("/")[-1][:-5])
+
+        cols = element.find_all("td")
+        start_time_el = cols[2]
+        start_time = start_time_el.text
+        start_time = datetime.strptime(start_time, "%d.%m.%Y %H:%M:%S")
+
+        end_time_el = cols[3]
+        if end_time_el.text == "Ešte neukončené!":
+            end_time = None
+        else:
+            end_time = end_time_el.text
+            end_time = datetime.strptime(end_time, "%d.%m.%Y %H:%M:%S")
+
+        return Test(id=id, start_time=start_time, end_time=end_time)
+
+    return [parse_test(e) for e in test_elements]
+
+
+def get_test_result(html: str) -> TestResult:
+    soup = BeautifulSoup(html, "html.parser")
+    total_points = soup.select_one(
+        "table.tests_result_sum_table > tbody > tr:nth-child(4) > td"
+    )
+    if total_points is None:
+        raise ListParserError("Failed to parse total points")
+    total_points = float(total_points.text.strip())
+
+    problem_elements = soup.select("table.tests_evaluation_table > tbody > tr")
+
+    def parse_problem_result(element) -> TestResultProblem:
+        items = element.find_all("td")
+        name = items[0].text.strip()
+        percentage = float(items[1].text.strip()[0:-1])
+        points = float(items[2].text.strip())
+
+        return TestResultProblem(name=name, percentage=percentage, points=points)
+
+    problmes = [parse_problem_result(e) for e in problem_elements]
+
+    return TestResult(total_points=total_points, problems=problmes)

@@ -1,7 +1,17 @@
+from datetime import datetime
 import random
 import time
 
-from .models import Course, Problem, Submit, ListSession
+from .models import (
+    Course,
+    Problem,
+    Submit,
+    ListSession,
+    Test,
+    SubmitForm,
+    TestResult,
+    TestResultProblem,
+)
 
 
 def login(email: str, password: str) -> ListSession:
@@ -96,6 +106,39 @@ def run_test_for_submit(
     #     - version: {submit_version}
     # """
     #     )
+
+
+def get_student_test_queue(session: ListSession, problem_id: int) -> list[Test]:
+    time.sleep(0.2)
+    return [
+        Test(id=1, start_time=datetime.now(), end_time=datetime.now()),
+        Test(id=2, start_time=datetime.now(), end_time=datetime.now()),
+        Test(id=3, start_time=datetime.now(), end_time=None),
+    ]
+
+
+def get_submit_form(session: ListSession, problem_id: int) -> SubmitForm:
+    time.sleep(1)
+    return SubmitForm(
+        tests=["1170", "1192", "1048"],
+        task_set_id="5365",
+        student_id="2221",
+        select_test_type="java",
+    )
+
+
+def get_test_result(session: ListSession, test_id: int) -> TestResult:
+    time.sleep(1)
+    return TestResult(
+        total_points=5.0,
+        problems=[
+            TestResultProblem(
+                name="Problem 1",
+                points=5.0,
+                percentage=100.0,
+            )
+        ],
+    )
 
 
 class ListApiError(Exception):
