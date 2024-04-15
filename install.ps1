@@ -18,14 +18,14 @@ Write-Host ""
 Write-Host ""
 Write-Host ""
 Write-Host "To register the alias, run the following command:"
-Write-Host "notepad \$PROFILE"
+Write-Host 'notepad $PROFILE'
 Write-Host ""
 Write-Host "Add the following lines to the end of the file:"
-Write-Host """
+Write-Host @"
 function runlsbm {
   $(pwd)\venv\Scripts\python.exe $(pwd)\main.py @args
 }
 
 Set-Alias lsbm runlsbm
-"""
+"@
 
