@@ -5,6 +5,22 @@ from typing import Callable, TypeAlias
 
 DetectionResult: TypeAlias = tuple[float, list[str], list[str]]
 
+valid_code_extensions = [
+    ".py",
+    ".java",
+    ".cpp",
+    ".c",
+    ".h",
+    ".hpp",
+    ".cc",
+    ".kt",
+    ".hs",
+]
+
+
+def is_program_file(filename: str) -> bool:
+    return any(filename.endswith(ext) for ext in valid_code_extensions)
+
 
 @dataclass
 class Detector:
