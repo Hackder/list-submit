@@ -16,9 +16,6 @@ venv\Scripts\Activate.ps1
 # Install requirements
 python3 -m pip install -r requirements.txt
 
-# Deactivate virtual environment
-Deactivate-Environment
-
 # Create alias for script execution
 New-Alias lsbm -Value "${pwd}\venv\Scripts\python.exe ${pwd}\main.py" -Option Persistent -Scope CurrentUser
 
