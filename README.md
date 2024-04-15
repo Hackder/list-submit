@@ -90,7 +90,9 @@ No files to submit, the files list is empty.
 Add files using the --add flag.
 ```
 
-*NOTE: Automatic project type detection is comming soon.*
+Alternatively, if you have a standard structure for you problem solutions, list-submit
+will atempt to automatically detect the project type and determine which files to submit.
+For more detials see the [Project detection](#project-detection) section.
 
 This is because the list-submit utility does not know which files to submit.
 You can add files to the list using the `--add` flag:
@@ -173,3 +175,5 @@ project2/
 lsbm project1 # will submit using the configuration in the project1 directory
 ```
 
+# Project detection
+TODO
