@@ -1,6 +1,7 @@
+import glob
 import os
 
-from detectors.detector import Detector, DetectionResult
+from detectors.detector import Detector, DetectionResult, is_program_file
 
 
 def get_detector() -> Detector:
@@ -11,13 +12,15 @@ def get_detector() -> Detector:
 
 
 def get_probability_with_files(path: str) -> DetectionResult:
-    files = os.listdir(path)
+    original_path = path
+    first_files = os.listdir(path)
 
-    if "src" in files:
-        files = [
-            os.path.join("src", filename)
-            for filename in os.listdir(os.path.join(path, "src"))
-        ]
+    if "src" in first_files:
+        path = os.path.join(path, "src")
+
+    files = glob.glob(os.path.join(path, "**", "*"), recursive=True)
+    files = [f for f in files if is_program_file(f)]
+    files = [os.path.relpath(f, original_path) for f in files]
 
     if "riesenie.py" in files:
         if __has_list_header_comment(os.path.join(path, "riesenie.py")):

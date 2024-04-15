@@ -15,6 +15,7 @@ import ui
 import cli
 import config
 import detectors.python_detector
+import detectors.java_detector
 
 
 def exit_handler():
@@ -26,7 +27,10 @@ def exit_handler():
 atexit.register(exit_handler)
 
 
-DETECTORS = [detectors.python_detector.get_detector()]
+DETECTORS = [
+    detectors.python_detector.get_detector(),
+    detectors.java_detector.get_detector(),
+]
 
 
 def new_local_config(
@@ -50,7 +54,7 @@ def new_local_config(
     out.println()
 
     detector, probability, files, recommendations = max(
-        map(lambda d: (d,) + d.detect(os.getcwd()), DETECTORS)
+        map(lambda d: (d,) + d.detect(os.getcwd()), DETECTORS), key=lambda x: x[1]
     )
 
     if probability < 0.3:
@@ -61,8 +65,8 @@ def new_local_config(
             out.primary("Detected project as:"), out.primary(out.bold(detector.name))
         )
         for file in files[:-1]:
-            out.println("|-", file)
-        out.println("∟", files[-1])
+            out.println("├", file)
+        out.println("└", files[-1])
 
         out.println()
         for recommendation in recommendations:
