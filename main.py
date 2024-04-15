@@ -64,8 +64,9 @@ def new_local_config(
             out.println("|-", file)
         out.println("∟", files[-1])
 
+        out.println()
         for recommendation in recommendations:
-            out.println(out.primary("Recommendation"), recommendation)
+            out.println(out.error("Recommendation"), recommendation)
 
         if not ui.confirm("Do you want to use these files?", default="y"):
             files = []
