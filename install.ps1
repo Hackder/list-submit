@@ -1,5 +1,5 @@
 # Check Python 3.12 version
-$version = (python3.exe -Version).Trim()
+$version = (python3.exe --version).Trim()
 if ($version -match "^Python 3\.12.*") {
   Write-Host "Python 3.12 is already installed"
 } else {
