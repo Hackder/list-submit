@@ -64,7 +64,7 @@ def prompt(
 
 def select_from_list[T](items: list[T], display: Callable[[T], str]) -> T:
     for i, item in enumerate(items):
-        out.println(out.secondary(f"{i + 1}."), display(item))
+        out.println(out.bold(f"{i + 1}."), display(item))
 
     while True:
         input = prompt("Select: ")
