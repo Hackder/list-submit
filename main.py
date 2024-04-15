@@ -149,9 +149,10 @@ def main():
         for i in range(len(files)):
             out.println(out.primary("Adding"), files[i])
 
-        if len(files) > 3:
+        if len(files) > 5:
             ui.confirm(
-                f"You are about to add these {len(files)} files to the project. Continue?"
+                f"You are about to add these {len(files)} files to the project. Continue?",
+                default="y",
             )
 
         for file in files:
