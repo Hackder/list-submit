@@ -10,11 +10,8 @@ if ($version -match "^Python 3\.12.*") {
 # Create virtual environment
 python3 -m venv venv
 
-# Activate virtual environment (temporary)
-venv\Scripts\Activate.ps1
-
 # Install requirements
-python3 -m pip install -r requirements.txt
+.\venv\Scripts\python.exe -m pip install -r requirements.txt
 
 # Create alias for script execution
 New-Alias lsbm -Value "${pwd}\venv\Scripts\python.exe ${pwd}\main.py" -Option Persistent -Scope CurrentUser
