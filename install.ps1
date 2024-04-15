@@ -1,5 +1,5 @@
 # Check Python 3.12 version
-$version = (python3.exe --version).Trim()
+$version = (python3 --version).Trim()
 if ($version -match "^Python 3\.12.*") {
   Write-Host "Python 3.12 is already installed"
 } else {
@@ -8,13 +8,13 @@ if ($version -match "^Python 3\.12.*") {
 }
 
 # Create virtual environment
-python3.exe -m venv venv
+python3 -m venv venv
 
 # Activate virtual environment (temporary)
 venv\Scripts\Activate.ps1
 
 # Install requirements
-python3.exe -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 
 # Deactivate virtual environment
 Deactivate-Environment
