@@ -215,9 +215,9 @@ def main():
             queue = list_api.get_student_test_queue(
                 session, project_config.problem.problem_id, int(form.student_id)
             )
-            closest = min(queue, key=lambda t: abs(start - t.start_time))
-            delta = abs(start - closest.start_time)
-            if delta.seconds > 2:
+            closest = max(queue, key=lambda t: t.start_time - start)
+            delta = closest.start_time - start
+            if delta.total_seconds() > 0:
                 time.sleep(0.5)
                 continue
 
