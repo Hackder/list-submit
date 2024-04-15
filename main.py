@@ -13,6 +13,7 @@ import out
 import ui
 import cli
 import config
+import detectors.python_detector
 
 
 def exit_handler():
@@ -22,6 +23,9 @@ def exit_handler():
 
 
 atexit.register(exit_handler)
+
+
+DETECTORS = [detectors.python_detector.get_detector()]
 
 
 def new_local_config(
@@ -35,20 +39,42 @@ def new_local_config(
     )
     out.println(out.bold("Select a course:"))
     course = ui.select_from_list(courses, lambda c: c.name)
+    out.println()
 
     problems = ui.display_request(
         f"problems for course '{course.name}'",
         lambda: list_api.get_problems_for_course(session, course.id),
     )
     problem = ui.select_from_list(problems, lambda p: p.name)
+    out.println()
+
+    detector, probability, files, recommendations = max(
+        map(lambda d: (d,) + d.detect(os.getcwd()), DETECTORS)
+    )
+
+    if probability < 0.3:
+        out.println("Could not detect project files automatically.")
+        files = []
+    else:
+        out.println(
+            out.primary("Detected project as:"), out.primary(out.bold(detector.name))
+        )
+        for file in files[:-1]:
+            out.println("|-", file)
+        out.println("∟", files[-1])
+
+        for recommendation in recommendations:
+            out.println(out.primary("Recommendation"), recommendation)
+
+        if not ui.confirm("Do you want to use these files?", default="y"):
+            files = []
 
     cfg = config.ProjectConfig(
         version=config.constants.VERSION,
         problem=config.ProblemConfig(
             problem_id=problem.id,
             course_id=course.id,
-            # TODO: Run automatic project detection to prefill files
-            files=[],
+            files=files,
         ),
     )
 
@@ -77,8 +103,10 @@ def main():
     )
 
     project_config_location = config.find_project_config(options.project)
+    new_config = False
     if project_config_location is None:
         project_config, problem = new_local_config(session)
+        new_config = True
         config.save_project_config(project_config, None)
     else:
         project_config = config.load_project_config(project_config_location)
@@ -149,6 +177,11 @@ def main():
             "No files to submit, the files list is empty\nAdd files using the --add flag"
         )
         exit(1)
+
+    if new_config and not ui.confirm(
+        "Do you want to submit the solution now?", default="y"
+    ):
+        exit(0)
 
     submit_solution(session, problem, project_config, project_directory)
 
