@@ -56,6 +56,10 @@ def bold(text: str) -> str:
     return color(text, BOLD)
 
 
+def reset(text: str) -> str:
+    return color(text, RESET)
+
+
 def hide_cursor():
     """
     Hide cursor

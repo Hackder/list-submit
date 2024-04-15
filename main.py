@@ -248,6 +248,15 @@ def main():
         "getting test results", lambda: list_api.get_test_result(session, test_id)
     )
 
+    for problem in test_result.problems:
+        if problem.percentage >= 100:
+            out.println(out.secondary(f"{problem.name} passed"))
+            continue
+
+        out.error(out.bold(f"{problem.name} failed"))
+        out.error(problem.output)
+
+    out.println()
     out.println(out.bold(f"Total points: {test_result.total_points}"))
 
     max_len = max(map(lambda p: len(p.name), test_result.problems), default=0)

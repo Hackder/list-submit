@@ -96,3 +96,4 @@ class TestResultProblem:
     name: str
     percentage: float
     points: float
+    output: str

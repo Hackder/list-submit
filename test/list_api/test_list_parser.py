@@ -252,12 +252,34 @@ class ListParserTestResult(unittest.TestCase):
 
         test = list_parser.get_test_result(html)
 
+        expected_output = """
+Stage 1 / 1: running test ...
+----- Running test file Testriesenie.py
+test1 Turing() ok
+test2 Turing() ok
+test3 Turing() ok
+test4 Turing() ok
+test5 Turing() ok
+----------------------------------------------------------------------
+Ran 5 tests in 1.030s
+
+OK
+
+uspesnost: 100 % = 5.00 bodov
+----- Testing finished.
+""".strip()
+
         self.assertEqual(
             test,
             TestResult(
                 total_points=5.0,
                 problems=[
-                    TestResultProblem(name="pprojl 03", points=5.0, percentage=100.0)
+                    TestResultProblem(
+                        name="pprojl 03",
+                        points=5.0,
+                        percentage=100.0,
+                        output=expected_output,
+                    )
                 ],
             ),
         )

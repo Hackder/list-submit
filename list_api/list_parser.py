@@ -213,14 +213,23 @@ def get_test_result(html: str) -> TestResult:
 
     problem_elements = soup.select("table.tests_evaluation_table > tbody > tr")
 
-    def parse_problem_result(element) -> TestResultProblem:
+    output_elements = soup.select("fieldset pre")
+
+    def parse_problem_result(element, output_element) -> TestResultProblem:
         items = element.find_all("td")
         name = items[0].text.strip()
         percentage = float(items[1].text.strip()[0:-1])
         points = float(items[2].text.strip())
 
-        return TestResultProblem(name=name, percentage=percentage, points=points)
+        output = output_element.text.strip()
 
-    problmes = [parse_problem_result(e) for e in problem_elements]
+        return TestResultProblem(
+            name=name, percentage=percentage, points=points, output=output
+        )
+
+    problmes = [
+        parse_problem_result(*params)
+        for params in zip(problem_elements, output_elements)
+    ]
 
     return TestResult(total_points=total_points, problems=problmes)
