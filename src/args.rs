@@ -4,7 +4,7 @@ use clap::{Args, Parser, Subcommand};
 #[command(name = "list-submit")]
 pub struct ListSubmitArgs {
     #[command(subcommand)]
-    pub subcommand: ListSubmitCommand,
+    pub subcommand: Option<ListSubmitCommand>,
 }
 
 

@@ -4,8 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+chrono = { version = "0.4.38", features = ["serde"] }
 clap = { version = "4.5.4", features = ["derive"] }
 inquire = "0.7.4"
+log = "0.4.21"
+reqwest = { version = "0.12.3", features = ["blocking", "cookies", "json", "multipart"] }
 scraper = "0.19.0"
 serde = { version = "1.0.197", features = ["derive"] }
 toml_edit = { version = "0.22.9", features = ["serde"] }
