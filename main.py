@@ -202,6 +202,14 @@ def main():
     with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
         for file in project_config.problem.files:
             abs_path = os.path.join(project_directory, file)
+            if not os.path.exists(abs_path):
+                result = ui.confirm(
+                    out.danger(f"File {file} does not exist. Proceed without it?"),
+                    default="y",
+                )
+                if result:
+                    continue
+                exit(1)
             zip_file.write(abs_path, os.path.basename(abs_path))
 
     submit = ui.display_request(
