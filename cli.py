@@ -6,11 +6,12 @@ import constants
 
 @dataclass
 class CliOptions:
-    auth: bool = False
-    project: str | None = ""
-    add: str | None = ""
-    remove: str | None = ""
-    log_level: str = "WARNING"
+    auth: bool
+    project: str | None
+    add: str | None
+    remove: str | None
+    clean: bool
+    log_level: str
 
 
 DESCRIPTION = """
@@ -41,6 +42,11 @@ parser.add_argument(
     help="Remove all files mathing the provided glob pattern",
 )
 parser.add_argument(
+    "--clean",
+    action="store_true",
+    help="Remove all non existing files from the project config",
+)
+parser.add_argument(
     "--log-level",
     action="store",
     default="WARNING",
@@ -65,5 +71,6 @@ def parse_cli_params(argv: list[str]) -> CliOptions:
         project=options.project,
         add=options.add,
         remove=options.remove,
+        clean=options.clean,
         log_level=options.log_level,
     )

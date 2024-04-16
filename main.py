@@ -160,7 +160,6 @@ def main():
                 project_config.problem.files.append(file)
 
         config.save_project_config(project_config, project_config_location)
-        exit(0)
 
     if options.remove is not None:
         files = get_relative_glob(options.remove, project_directory)
@@ -172,6 +171,16 @@ def main():
         )
 
         config.save_project_config(project_config, project_config_location)
+
+    if options.clean:
+        for file in project_config.problem.files:
+            if not os.path.exists(os.path.join(project_directory, file)):
+                out.println(out.primary("Cleaning"), file)
+                project_config.problem.files.remove(file)
+
+        config.save_project_config(project_config, project_config_location)
+
+    if options.add is not None or options.remove is not None or options.clean:
         exit(0)
 
     if session is None:
