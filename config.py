@@ -116,21 +116,27 @@ def find_project_config(name: str | None) -> str | None:
 
     if name is not None:
         q = queue.Queue()
+        q.put(os.getcwd())
         while not q.empty():
-            dir = q.get()
-            listing = os.listdir(dir)
-            has_config_file = project_config_name in listing
-            if os.path.dirname(dir) == name and has_config_file:
-                project_directory = os.path.join(dir, project_config_name)
+            p = q.get()
+            if (
+                os.path.basename(p) == project_config_name
+                and os.path.basename(os.path.dirname(p)) == name
+            ):
+                project_config_path = p
                 logger.debug(
                     "Found project with name: %s, directory: %s",
                     name,
-                    project_directory,
+                    project_config_path,
                 )
-                return project_directory
+                return project_config_path
 
-            directories = [d for d in listing if os.path.isdir(d)]
-            for d in directories:
+            if os.path.isfile(p):
+                continue
+
+            listing = os.listdir(p)
+            paths = [os.path.join(p, d) for d in listing]
+            for d in paths:
                 q.put(d)
 
         logger.debug("Project directory with name %s not found", name)
