@@ -1,5 +1,10 @@
+use args::ListSubmitArgs;
+use clap::Parser;
+
 mod args;
 
 fn main() {
-    println!("Hello, world!");
+    let args = ListSubmitArgs::parse();
+
+    println!("{:#?}", args);
 }
