@@ -91,6 +91,15 @@ impl Detector for PythonDetector {
             .into_iter()
             .filter(|f| f.extension().unwrap() == "py")
             .collect_vec();
+        
+        if python_files.is_empty() {
+            return Ok(DetectionResult {
+                probability: 0.0,
+                files: vec![],
+                recommendations: vec![],
+            });
+        }
+
         if python_files.len() == files_len {
             return Ok(DetectionResult {
                 probability: 0.8,

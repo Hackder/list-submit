@@ -293,16 +293,23 @@ pub fn create_project_config(
 
             Some((res, detector))
         })
+        .filter(|(res, _)| res.probability > 0.0)
         .max_by_key(|(res, _)| (res.probability * 1000.0) as i32);
 
     let files = match result {
         Some((res, detector)) => {
+            eprintln!();
             eprintln!(
                 "{} {} {}",
                 "Detected".green(),
                 detector.name().bold(),
                 format!("with probability: {:.0}%", res.probability * 100.0).bold()
             );
+
+            for recom in res.recommendations {
+                eprintln!("{}: {}", "Recommendation:".yellow(), recom);
+            }
+
             res.files
         }
         None => {
@@ -314,11 +321,15 @@ pub fn create_project_config(
     let files = files
         .into_iter()
         .map(|p| p.to_string_lossy().to_string())
-        .collect();
+        .collect::<Vec<_>>();
 
-    let files = MultiSelect::new("Select autodetected files to keep", files)
-        .with_all_selected_by_default()
-        .prompt()?;
+    let files = if !files.is_empty() {
+        MultiSelect::new("Select autodetected files to keep", files)
+            .with_all_selected_by_default()
+            .prompt()?
+    } else {
+        files
+    };
 
     let (project_config, path) = ProjectConfig::create(
         std::env::current_dir()?.as_path(),
