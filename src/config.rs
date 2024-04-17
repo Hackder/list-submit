@@ -1,5 +1,6 @@
 use colored::Colorize;
 use inquire::MultiSelect;
+use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use std::{
     collections::VecDeque,
@@ -287,12 +288,10 @@ impl ProjectConfig {
             .as_array_mut()
             .unwrap();
 
-        files_arr.retain(|f| {
-            self.problem.files.contains(
-                &f.as_str()
-                    .expect("Non string value in config files array")
-                    .to_owned(),
-            )
+        files_arr.clear();
+
+        self.problem.files.iter().unique().for_each(|file| {
+            files_arr.push(file);
         });
 
         std::fs::write(path, document.to_string()).map_err(Into::into)
@@ -325,8 +324,16 @@ impl ProjectConfig {
             return Ok(());
         }
 
+        let default = files
+            .iter()
+            .enumerate()
+            .filter(|(_, value)| self.problem.files.contains(&value.display().to_string()))
+            .map(|(i, _)| i)
+            .collect::<Vec<_>>();
+
         let picked = MultiSelect::new("Select files to add", files)
             .with_vim_mode(true)
+            .with_default(&default)
             .prompt()?;
 
         let picked = picked.into_iter().map(|f| f.0);
@@ -339,10 +346,26 @@ impl ProjectConfig {
     pub fn files_menu_interactive(&mut self) -> eyre::Result<()> {
         let picked = MultiSelect::new("Deselect files to remove", self.problem.files.clone())
             .with_vim_mode(true)
+            .with_all_selected_by_default()
             .prompt()?;
 
         self.problem.files.retain(|f| picked.contains(f));
 
         Ok(())
+    }
+
+    pub fn clean_files(&mut self, relative_to: &Path) -> eyre::Result<usize> {
+        let len_before = self.problem.files.len();
+        self.problem.files.retain(|f| {
+            if relative_to.join(f).exists() {
+                true
+            } else {
+                eprintln!("{} {}", "Removing file:".red(), f);
+                false
+            }
+        });
+        let len_after = self.problem.files.len();
+
+        Ok(len_before - len_after)
     }
 }

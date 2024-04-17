@@ -73,19 +73,9 @@ fn main() -> eyre::Result<()> {
                 }
                 files => {
                     let real_files = files
-                        .iter()
-                        .filter(|file| Path::new(file).is_file())
-                        .map(|filepath| -> eyre::Result<PathBuf> {
-                            let path = cwd.join(filepath).canonicalize()?;
-                            Ok(path)
-                        })
-                        .filter_map(|value| match value {
-                            Ok(path) => Some(path),
-                            Err(err) => {
-                                log::warn!("Failed to add file: {}", err);
-                                None
-                            }
-                        });
+                        .into_iter()
+                        .filter(|file| cwd.join(file).is_file())
+                        .map(|file| file.clone());
 
                     project_config.add_files(real_files);
                 }
@@ -103,7 +93,16 @@ fn main() -> eyre::Result<()> {
             project_config.save(real_project_config_path.as_path())?;
             std::process::exit(0);
         }
-        Some(ListSubmitCommand::Clean) => {}
+        Some(ListSubmitCommand::Clean) => {
+            let cleaned = project_config.clean_files(project_config_dir)?;
+            eprintln!(
+                "{} {} files",
+                "Cleaned".green(),
+                cleaned.to_string().bold()
+            );
+            project_config.save(real_project_config_path.as_path())?;
+            std::process::exit(0);
+        }
         Some(ListSubmitCommand::Submit) | None => {}
         Some(ListSubmitCommand::Auth) => {
             return Err(eyre::eyre!("Auth command should not be called here"));

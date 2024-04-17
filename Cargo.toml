@@ -10,6 +10,7 @@ color-eyre = "0.6.3"
 colored = "2.1.0"
 eyre = "0.6.12"
 inquire = "0.7.4"
+itertools = "0.12.1"
 log = "0.4.21"
 pathdiff = "0.2.1"
 reqwest = { version = "0.12.3", features = ["blocking", "cookies", "json", "multipart"] }
