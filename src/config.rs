@@ -54,7 +54,7 @@ impl GlobalConfig {
                     match toml_edit::de::from_document::<GlobalConfig>(config) {
                         Ok(config) => {
                             if let Some(auth) = &config.auth {
-                                if auth.email.is_empty() && auth.password.is_empty() {
+                                if auth.is_empty() {
                                     return Ok(Some(GlobalConfig {
                                         auth: None,
                                         ..config
@@ -99,26 +99,9 @@ impl GlobalConfig {
             create_from_template(&path, include_str!("templates/global-config.toml"))?;
         }
 
-        let content = std::fs::read_to_string(&path)?;
-        let mut document = content.parse::<toml_edit::DocumentMut>()?;
+        let config = toml_edit::ser::to_string_pretty(self)?;
 
-        // TODO: Make sure version matches, file could have changed during runtime
-
-        document["version"] = toml_edit::value(self.version.clone());
-
-        if let Some(auth) = &self.auth {
-            let auth_table = document
-                .as_table_mut()
-                .entry("auth")
-                .or_insert(toml_edit::table());
-
-            auth_table["email"] = toml_edit::value(auth.email.clone());
-            auth_table["password"] = toml_edit::value(auth.password.clone());
-        } else {
-            document.remove("auth");
-        }
-
-        std::fs::write(&path, document.to_string())?;
+        std::fs::write(&path, config)?;
 
         Ok(())
     }
@@ -137,4 +120,10 @@ impl Default for GlobalConfig {
 pub struct AuthConfig {
     pub email: String,
     pub password: String,
+}
+
+impl AuthConfig {
+    pub fn is_empty(&self) -> bool {
+        self.email.is_empty() && self.password.is_empty()
+    }
 }
