@@ -125,7 +125,7 @@ impl ListApiClient {
 
         let form = Form::new()
             .text("submit_button", "Odovzdať riešenie")
-            .part("solution", file);
+            .part("file", file);
 
         let response = self
             .client
@@ -137,6 +137,7 @@ impl ListApiClient {
             .send()?;
 
         let text = response.text()?;
+        println!("{}", text);
         let submits = parser::parse_submits(&text, problem_id)?;
         Ok(submits.last().unwrap().clone())
     }

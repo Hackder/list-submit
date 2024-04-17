@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="robots" content="noindex, follow" />
+        <title>L.I.S.T. - Výber kurzu</title>
+        <link type="text/css" rel="stylesheet" media="screen" href="https://list.fmph.uniba.sk/public/css/frontend_general.css?list_version=1.9.0" />
+        <link href="https://list.fmph.uniba.sk/public/css/general_text_content_styles.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link href="https://list.fmph.uniba.sk/public/css/list-theme/jquery-ui-1.10.2.custom.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link href="https://list.fmph.uniba.sk/public/css/jqueryui-timepicker-addon.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link href="https://list.fmph.uniba.sk/public/css/notification.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link href="https://list.fmph.uniba.sk/public/css/font-awesome/css/font-awesome.min.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link rel="shortcut icon" href="https://list.fmph.uniba.sk/favicon.ico" />
+        <script type="text/javascript">
+            var global_base_url = "https://list.fmph.uniba.sk/";
+            var logout_question_text = "";
+            var jqueryui_datepicker_region = "sk";
+            var list_version = "?list_version=1.9.0";
+        </script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/language/sk/messages.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.mousewheel-3.0.6.pack.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.fancybox.pack.js?v=2.1.4&amp;list_version=1.9.0"></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="https://list.fmph.uniba.sk/public/css/jquery.fancybox.css?v=2.1.4&amp;list_version=1.9.0" />
+        <link rel="stylesheet" type="text/css" media="screen" href="https://list.fmph.uniba.sk/public/css/jquery.fancybox-buttons.css?v=2.1.4&amp;list_version=1.9.0" />
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.fancybox-buttons.js?v=2.1.4&amp;list_version=1.9.0"></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="https://list.fmph.uniba.sk/public/css/jquery.fancybox-thumbs.css?v=2.1.4&amp;list_version=1.9.0" />
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.fancybox-thumbs.js?v=2.1.4&amp;list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.fancybox-media.js?v=1.0.0&amp;list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery-ui-1.10.2.custom.min.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery-ui-timepicker-addon.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.blockUI.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/api.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/courses/quick_change.js?list_version=1.9.0"></script>
+        <link rel="stylesheet" type="text/css" href="https://list.fmph.uniba.sk/public/css/frontend_courses.css?list_version=1.9.0" media="screen" />        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/courses/selection.js?list_version=1.9.0"></script>        
+<script type="text/javascript">
+    var messages = {
+        unknown_error: 'Vyskytla sa neznáma chyba. Prosím zopakujte pokus neskôr.'
+    };
+</script>
+
+    </head>
+    <body>
+                <div id="top_meta_informations">
+            <div class="left">    <span id="active_course_id">
+            Programovanie 4 - Java / Letný semester 2023/2024
+                    <ul id="top_courses_selector_id">
+                        <li><a href="https://list.fmph.uniba.sk/courses/quick_course_change/155/-CURRENT_URL-.html">Programovanie 2 / Letný semester 2023/2024</a></li>
+                        <li><a href="https://list.fmph.uniba.sk/courses/quick_course_change/151/-CURRENT_URL-.html">Programovanie 4 - Java / Letný semester 2023/2024</a></li>
+                        <li><a href="https://list.fmph.uniba.sk/courses/quick_course_change/149/-CURRENT_URL-.html">Programovanie 1 / Zimný semester 2023/2024</a></li>
+                    </ul>
+            </span>
+</div>
+            <div class="right"><div class="student_panel">
+    Juraj Petráš | <a href="https://list.fmph.uniba.sk/students/my_account.html">Môj účet</a> | 
+    <a href="https://list.fmph.uniba.sk/students/logout.html" class="pagemenu_logout">Odhlásiť sa</a>
+</div></div>
+            <div class="clear"></div>
+        </div>
+        <div id="mainwrap">
+            <div id="leftwrap">
+                <div class="title">
+                    <h4>Navigácia</h4>
+                </div>
+                <ul id="pagemenu">
+                    <li class="selected">
+            <a href="https://list.fmph.uniba.sk/courses.html" class="">Zapísať sa na kurz</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/groups.html" class="">Zmeniť svoju skupinu</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/courses/course_description.html" class="">Popis kurzu</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/content.html" class="">Obsah kurzu</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/tasks.html" class="">Úlohy a hodnotenie</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/projects.html" class="">Projekty</a>
+                    </li>
+        
+</ul>
+
+                
+            </div>
+            <div id="rightwrap"><div class="internal_padding">
+    <h1>Výber kurzu</h1>
+        <fieldset>
+        <form action="https://list.fmph.uniba.sk/courses.html" method="post">
+            <select name="period_id" size="1">
+                <option value="30" selected="selected">Letný semester 2023/2024</option>
+<option value="29">Zimný semester 2023/2024</option>
+<option value="28">Letný semester 2022/2023</option>
+<option value="27">Zimný semester 2022/2023</option>
+<option value="26">Letný semester 2021/2022</option>
+<option value="25">Zimný semester 2021/2022</option>
+<option value="24">Letný semester 2020/2021</option>
+<option value="23">Zimný semester 2020/2021</option>
+<option value="22">Letný semester 2019/2020</option>
+<option value="21">Zimný semester 2019/2020</option>
+<option value="20">Letný semester 2018/2019</option>
+<option value="19">Zimný semester 2018/2019</option>
+<option value="18">Letný semester 2017/2018</option>
+<option value="17">Zimný semester 2017/2018</option>
+<option value="16">Letný semester 2016/2017</option>
+<option value="15">Zimný semester 2016/2017</option>
+<option value="14">Letný semester 2015/2016</option>
+<option value="13">Zimný semester 2015/2016</option>
+<option value="12">Letný semester 2014/2015</option>
+<option value="11">Zimný semester 2014/2015</option>
+<option value="10">Letný semester 2013/2014</option>
+<option value="9">Zimný semester 2013/2014</option>
+<option value="1">Letný semester 2012/2013</option>
+<option value="2">Zimný semester 2012/2013</option>
+<option value="3">Letný semester 2011/2012</option>
+<option value="4">Zimný semester 2011/2012</option>
+<option value="5">Letný semester 2010/2011</option>
+<option value="6">Zimný semester 2010/2011</option>
+<option value="7">Letný semester 2009/2010</option>
+<option value="8">Zimný semester 2009/2010</option>
+
+            </select>
+            <input type="submit" name="submit_button" value="Vyber obdobie" class="button" />
+        </form>
+    </fieldset>
+            <fieldset>
+            <legend>Letný semester 2023/2024</legend>
+            <div class="period_courses">
+                    <div class="period_course">
+        <h4>Funkcionálne programovanie</h4>
+<p>
+        <a href="https://list.fmph.uniba.sk/courses/signup_to_course/152.html" class="button signup_to_course">Zapísať sa na kurz</a>
+    <a href="https://list.fmph.uniba.sk/courses/show_details/152.html" class="button special show_details">Zobraz detaily</a>
+</p>    </div>
+    <div class="period_course">
+        <h4>Programovanie 2</h4>
+<p>
+                    <a href="https://list.fmph.uniba.sk/courses/activate_course/155.html" class="button activate_course">Označiť ako aktívny kurz</a>
+            <a href="https://list.fmph.uniba.sk/courses/show_details/155.html" class="button special show_details">Zobraz detaily</a>
+</p>    </div>
+    <div class="period_course">
+        <h4>Programovanie 4 - Java</h4>
+<p>
+                <a href="https://list.fmph.uniba.sk/courses/show_details/151.html" class="button special show_details">Zobraz detaily</a>
+</p>    </div>
+    <div class="period_course">
+        <h4>Umelá Inteligencia</h4>
+<p>
+        <a href="https://list.fmph.uniba.sk/courses/signup_to_course/153.html" class="button signup_to_course">Zapísať sa na kurz</a>
+    <a href="https://list.fmph.uniba.sk/courses/show_details/153.html" class="button special show_details">Zobraz detaily</a>
+</p>    </div>
+            </div>
+        </fieldset>
+    </div></div>
+            <div class="clear"></div>
+        </div>
+        <div id="footer"><span>L.I.S.T. verzia 1.9.0. <span class="additional">Pôvodne navrhol a vytvoril Andrej Jursa v 2013 ako bakalársku prácu na škole Univerzita Komenského v Bratislave, Fakulta matematiky, fyziky a informatiky.</span></span></div>
+    </body>
+</html>
+

@@ -1,0 +1,327 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="robots" content="noindex, follow" />
+        <title>L.I.S.T.</title>
+        <link type="text/css" rel="stylesheet" media="screen" href="https://list.fmph.uniba.sk/public/css/frontend_general.css?list_version=1.9.0" />
+        <link href="https://list.fmph.uniba.sk/public/css/general_text_content_styles.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link href="https://list.fmph.uniba.sk/public/css/list-theme/jquery-ui-1.10.2.custom.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link href="https://list.fmph.uniba.sk/public/css/jqueryui-timepicker-addon.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link href="https://list.fmph.uniba.sk/public/css/notification.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link href="https://list.fmph.uniba.sk/public/css/font-awesome/css/font-awesome.min.css?list_version=1.9.0" rel="stylesheet" type="text/css" />
+        <link rel="shortcut icon" href="https://list.fmph.uniba.sk/favicon.ico" />
+        <script type="text/javascript">
+            var global_base_url = "https://list.fmph.uniba.sk/";
+            var logout_question_text = "";
+            var jqueryui_datepicker_region = "sk";
+            var list_version = "?list_version=1.9.0";
+        </script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/language/sk/messages.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.mousewheel-3.0.6.pack.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.fancybox.pack.js?v=2.1.4&amp;list_version=1.9.0"></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="https://list.fmph.uniba.sk/public/css/jquery.fancybox.css?v=2.1.4&amp;list_version=1.9.0" />
+        <link rel="stylesheet" type="text/css" media="screen" href="https://list.fmph.uniba.sk/public/css/jquery.fancybox-buttons.css?v=2.1.4&amp;list_version=1.9.0" />
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.fancybox-buttons.js?v=2.1.4&amp;list_version=1.9.0"></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="https://list.fmph.uniba.sk/public/css/jquery.fancybox-thumbs.css?v=2.1.4&amp;list_version=1.9.0" />
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.fancybox-thumbs.js?v=2.1.4&amp;list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.fancybox-media.js?v=1.0.0&amp;list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery-ui-1.10.2.custom.min.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery-ui-timepicker-addon.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.blockUI.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/api.js?list_version=1.9.0"></script>
+        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/courses/quick_change.js?list_version=1.9.0"></script>
+        <link rel="stylesheet" type="text/css" href="https://list.fmph.uniba.sk/public/css/frontend_tasks.css?list_version=1.9.0" media="screen" /><link rel="stylesheet" type="text/css" href="https://list.fmph.uniba.sk/public/css/prettify.css?list_version=1.9.0" media="screen" />        <script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/mathjax/MathJax.js?config=TeX-AMS_CHTML-full&amp;list_version=1.9.0"></script><script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/tasks/task.js?list_version=1.9.0"></script><script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/google-code-prettify/prettify.js?list_version=1.9.0"></script><script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.scrollTo-1.4.3.1-min.js?list_version=1.9.0"></script><script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.plugin.min.js?list_version=1.9.0"></script><script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/jquery.countdown.js?list_version=1.9.0"></script><script type="text/javascript" src="https://list.fmph.uniba.sk/public/js/language/sk/jquery.countdown-sk.js?list_version=1.9.0"></script>
+<script type="text/javascript">
+    var task_id = 5495;
+    var student_id = 2221;
+    var messages = {
+        test_being_executed: 'Testovací skript sa vykonáva, môže to chvílu trvať. Prosím čakajte...',
+        test_no_selection: 'Chyba: buď nie sú označené žiadne testy alebo nie je vybraná verzia riešenia na testovanie.',
+        test_type_not_selected: 'Jazyk riešenia nebol vybraný.',
+        test_result_area: 'Výsledky testu',
+        test_result_tests_in_progress: 'Test(y) sa vykonávajú, prosím počkajte na zhodnotenie ...',
+        test_result_evaluation: 'Hotovo, tvoje skóre je ###NEW### bod(ov).',
+        test_result_not_obtained: 'Chyba pri vyhodnotení skóre, nemožno prevziať skóre.',
+        test_result_token_failed: 'Chyba pri vyžiadaní tokenu, nemožno pokračovať.',
+        countdown_time: '{d<}<strong>{dn} {dl}</strong> a {d>}<strong>{hnn}{sep}{mnn}{sep}{snn}</strong> do konca odovzdávania ...',
+        countdown_expired: 'Odovzdávanie riešení bolo ukončené.'
+    };
+    var test_evaluation_enabled = true;
+        var enable_countdown = true;
+    var countdown_to = new Date(2024, 06 - 1, 28, 23, 59, 00);
+    </script>
+
+    </head>
+    <body>
+                <div id="top_meta_informations">
+            <div class="left">    <span id="active_course_id">
+            Programovanie 2 / Letný semester 2023/2024
+                    <ul id="top_courses_selector_id">
+                        <li><a href="https://list.fmph.uniba.sk/courses/quick_course_change/152/-CURRENT_URL-.html">Funkcionálne programovanie / Letný semester 2023/2024</a></li>
+                        <li><a href="https://list.fmph.uniba.sk/courses/quick_course_change/155/-CURRENT_URL-.html">Programovanie 2 / Letný semester 2023/2024</a></li>
+                        <li><a href="https://list.fmph.uniba.sk/courses/quick_course_change/151/-CURRENT_URL-.html">Programovanie 4 - Java / Letný semester 2023/2024</a></li>
+                        <li><a href="https://list.fmph.uniba.sk/courses/quick_course_change/149/-CURRENT_URL-.html">Programovanie 1 / Zimný semester 2023/2024</a></li>
+                    </ul>
+            </span>
+</div>
+            <div class="right"><div class="student_panel">
+    Juraj Petráš | <a href="https://list.fmph.uniba.sk/students/my_account.html">Môj účet</a> |
+    <a href="https://list.fmph.uniba.sk/students/logout.html" class="pagemenu_logout">Odhlásiť sa</a>
+</div></div>
+            <div class="clear"></div>
+        </div>
+        <div id="mainwrap">
+            <div id="leftwrap">
+                <div class="title">
+                    <h4>Navigácia</h4>
+                </div>
+                <ul id="pagemenu">
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/courses.html" class="">Zapísať sa na kurz</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/groups.html" class="">Zmeniť svoju skupinu</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/courses/course_description.html" class="">Popis kurzu</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/content.html" class="">Obsah kurzu</a>
+                    </li>
+                    <li class="selected">
+            <a href="https://list.fmph.uniba.sk/tasks.html" class="">Úlohy a hodnotenie</a>
+                    </li>
+                    <li class="">
+            <a href="https://list.fmph.uniba.sk/projects.html" class="">Projekty</a>
+                    </li>
+
+</ul>
+
+
+            </div>
+            <div id="rightwrap"><div class="internal_padding">
+    <h1>Detaily úlohy</h1>
+                        <h2 class="task_name">týždenný projekt 03</h2>
+                    <div class="flash_message message_success">
+        Riešenie bolo úspešne uploadované.
+    </div>
+                <div id="tabs">
+                <ul style="height: 37px;">
+                    <li><a href="#tabs-task">Úloha</a></li>
+                    <li><a href="#tabs-solution">Riešenia</a></li>
+                    <li><a href="https://list.fmph.uniba.sk/fetests/get_student_test_queue_all/5495/2221.html">Výsledky testov</a></li>
+                                    </ul>
+                <div id="tabs-task">
+                                                                 
+                                        <h3>1. pprojl 03</h3>
+                    <div class="task_text text_content">
+                    <p>Definuj metódy triedy <strong>Turing</strong>.</p>                    </div>                                        <div class="task_files">
+                        <div class="task_files_title">Súbory pridané k tejto úlohe:</div>
+                                                <div class="task_file">
+                            <a href="https://list.fmph.uniba.sk/tasks/download_file/3056/cmllc2VuaWUucHk_.html">riesenie.py</a> (1.08 KiB)
+                        </div>
+                                            </div>
+                                        <div class="task_points">Táto časť je za <strong>5</strong> bodov.</div>
+                    <div class="task_author">Autor: Andrej Blaho</div>
+                                                            <div class="upload_solution" id="upload_solution_id">
+                        <fieldset class="basefieldset">
+                            <legend>Odovzdanie riešenia</legend>
+                            <form action="https://list.fmph.uniba.sk/tasks/upload_solution/5495.html" method="post" enctype="multipart/form-data">
+                                <div class="field">
+                                    <label for="file_id">Súbor:</label>
+                                    <p class="input"><input type="file" name="file" id="file_id" /></p>
+                                    <p class="input"><em>Prosím odovzdajte svoje riešenie v ZIP súbore. Maximálna veľkosť súboru je 48.83 MiB.</em></p>
+                                                                                                                                                                                    <p class="input"><em>Ďalšie povolené typy súborov sú: py. Tieto súbory budú zabalené do archívu ZIP po nahraní na server.</em></p>
+                                                                 
+                                                                 
+                                </div>
+                                <div class="field">
+                                    <label for="comment_id">Komentár k riešeniu:</label>
+                                    <p class="input"><textarea name="comment" id="comment_id"></textarea></p>
+                                    <p class="input"><em>Komentár slúži na zdelenie dôležitej poznámky k verzii riešenia, nie je nutné ho vždy vypísať.</em></p>
+                                </div>
+                                                                <div class="field">
+                                    <label>Zostávajúci čas:</label>
+                                    <p class="input" id="remaining_time"></p>
+                                    <span id="remaining_counter" style="display: none;"></span>
+                                </div>
+                                                                <div class="buttons">
+                                    <input type="submit" name="submit_button" value="Odovzdať riešenie" class="button" />
+                                </div>
+                            </form>
+                        </fieldset>
+                    </div>
+                                    </div>
+                <div id="tabs-solution">
+                                                                                                    <form action="" method="post" id="tests_form_id">
+                    <input type="hidden" name="test[task_set_id]" value="5495" />
+                    <input type="hidden" name="test[student_id]" value="2221" />                    <table class="solutions_table">
+                        <thead>
+                            <tr>
+                                <th class="select"></th>                                <th class="version">Verz.</th>
+                                <th class="file">Súbor</th>
+                                <th class="size">Veľkosť</th>
+                                <th class="modified">Posledná zmena</th>
+                                <th class="controlls"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                                    <tr>
+                                <td class="select"><input type="radio" name="test[version]" value="1" /></td>                                <td class="version">1</td>
+                                                                <td class="file"><a href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19iMjJjXzEuemlw.html" target="_blank">JurajPetras_1.zip</a></td>
+                                                                <td class="size">1.73 KiB</td>
+                                <td class="modified">15.04.2024 10:23:26</td>
+                                <td class="controlls">
+                                  <a class="button comment_edit" href="https://list.fmph.uniba.sk/tasks/solution_version_comment/412524.html" title="Pridať/upraviť komentár"><i class="fa fa-comment-o" aria-hidden="true"></i></a>
+                                                                    <a class="button" href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19iMjJjXzEuemlw.html" target="_blank" title="JurajPetras_1.zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                                                  </td>
+                            </tr>
+                                                    <tr>
+                                <td class="select"><input type="radio" name="test[version]" value="2" /></td>                                <td class="version">2</td>
+                                                                <td class="file"><a href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19jZDYxXzIuemlw.html" target="_blank">JurajPetras_2.zip</a></td>
+                                                                <td class="size">1.73 KiB</td>
+                                <td class="modified">15.04.2024 11:20:58</td>
+                                <td class="controlls">
+                                  <a class="button comment_edit" href="https://list.fmph.uniba.sk/tasks/solution_version_comment/412542.html" title="Pridať/upraviť komentár"><i class="fa fa-comment-o" aria-hidden="true"></i></a>
+                                                                    <a class="button" href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19jZDYxXzIuemlw.html" target="_blank" title="JurajPetras_2.zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                                                  </td>
+                            </tr>
+                                                    <tr>
+                                <td class="select"><input type="radio" name="test[version]" value="3" /></td>                                <td class="version">3</td>
+                                                                <td class="file"><a href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc180ZDA1XzMuemlw.html" target="_blank">JurajPetras_3.zip</a></td>
+                                                                <td class="size">1.73 KiB</td>
+                                <td class="modified">15.04.2024 11:22:26</td>
+                                <td class="controlls">
+                                  <a class="button comment_edit" href="https://list.fmph.uniba.sk/tasks/solution_version_comment/412543.html" title="Pridať/upraviť komentár"><i class="fa fa-comment-o" aria-hidden="true"></i></a>
+                                                                    <a class="button" href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc180ZDA1XzMuemlw.html" target="_blank" title="JurajPetras_3.zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                                                  </td>
+                            </tr>
+                                                    <tr>
+                                <td class="select"><input type="radio" name="test[version]" value="4" /></td>                                <td class="version">4</td>
+                                                                <td class="file"><a href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19lOGEyXzQuemlw.html" target="_blank">JurajPetras_4.zip</a></td>
+                                                                <td class="size">1.73 KiB</td>
+                                <td class="modified">15.04.2024 11:51:30</td>
+                                <td class="controlls">
+                                  <a class="button comment_edit" href="https://list.fmph.uniba.sk/tasks/solution_version_comment/412548.html" title="Pridať/upraviť komentár"><i class="fa fa-comment-o" aria-hidden="true"></i></a>
+                                                                    <a class="button" href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19lOGEyXzQuemlw.html" target="_blank" title="JurajPetras_4.zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                                                  </td>
+                            </tr>
+                                                    <tr>
+                                <td class="select"><input type="radio" name="test[version]" value="5" /></td>                                <td class="version">5</td>
+                                                                <td class="file"><a href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19iNjBkXzUuemlw.html" target="_blank">JurajPetras_5.zip</a></td>
+                                                                <td class="size">1.73 KiB</td>
+                                <td class="modified">15.04.2024 11:53:26</td>
+                                <td class="controlls">
+                                  <a class="button comment_edit" href="https://list.fmph.uniba.sk/tasks/solution_version_comment/412549.html" title="Pridať/upraviť komentár"><i class="fa fa-comment-o" aria-hidden="true"></i></a>
+                                                                    <a class="button" href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19iNjBkXzUuemlw.html" target="_blank" title="JurajPetras_5.zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                                                  </td>
+                            </tr>
+                                                    <tr>
+                                <td class="select"><input type="radio" name="test[version]" value="6" /></td>                                <td class="version">6</td>
+                                                                <td class="file"><a href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19hMGNkXzYuemlw.html" target="_blank">JurajPetras_6.zip</a></td>
+                                                                <td class="size">1.73 KiB</td>
+                                <td class="modified">15.04.2024 11:54:27</td>
+                                <td class="controlls">
+                                  <a class="button comment_edit" href="https://list.fmph.uniba.sk/tasks/solution_version_comment/412550.html" title="Pridať/upraviť komentár"><i class="fa fa-comment-o" aria-hidden="true"></i></a>
+                                                                    <a class="button" href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19hMGNkXzYuemlw.html" target="_blank" title="JurajPetras_6.zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                                                  </td>
+                            </tr>
+                                                    <tr>
+                                <td class="select"><input type="radio" name="test[version]" value="7" /></td>                                <td class="version">7</td>
+                                                                <td class="file"><a href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19lMjU1Xzcuemlw.html" target="_blank">JurajPetras_7.zip</a></td>
+                                                                <td class="size">1.73 KiB</td>
+                                <td class="modified">15.04.2024 11:55:05</td>
+                                <td class="controlls">
+                                  <a class="button comment_edit" href="https://list.fmph.uniba.sk/tasks/solution_version_comment/412551.html" title="Pridať/upraviť komentár"><i class="fa fa-comment-o" aria-hidden="true"></i></a>
+                                                                    <a class="button" href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19lMjU1Xzcuemlw.html" target="_blank" title="JurajPetras_7.zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                                                  </td>
+                            </tr>
+                                                    <tr>
+                                <td class="select"><input type="radio" name="test[version]" value="8" /></td>                                <td class="version">8</td>
+                                                                <td class="file"><a href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19iZDAxXzguemlw.html" target="_blank">JurajPetras_8.zip</a></td>
+                                                                <td class="size">1.73 KiB</td>
+                                <td class="modified">15.04.2024 11:56:33</td>
+                                <td class="controlls">
+                                  <a class="button comment_edit" href="https://list.fmph.uniba.sk/tasks/solution_version_comment/412552.html" title="Pridať/upraviť komentár"><i class="fa fa-comment-o" aria-hidden="true"></i></a>
+                                                                    <a class="button" href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc19iZDAxXzguemlw.html" target="_blank" title="JurajPetras_8.zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                                                  </td>
+                            </tr>
+                                                    <tr>
+                                <td class="select"><input type="radio" name="test[version]" value="9" /></td>                                <td class="version">9</td>
+                                                                <td class="file"><a href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc182Y2JhXzkuemlw.html" target="_blank">JurajPetras_9.zip</a></td>
+                                                                <td class="size">1.73 KiB</td>
+                                <td class="modified">15.04.2024 11:57:10</td>
+                                <td class="controlls">
+                                  <a class="button comment_edit" href="https://list.fmph.uniba.sk/tasks/solution_version_comment/412553.html" title="Pridať/upraviť komentár"><i class="fa fa-comment-o" aria-hidden="true"></i></a>
+                                                                    <a class="button" href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc182Y2JhXzkuemlw.html" target="_blank" title="JurajPetras_9.zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                                                  </td>
+                            </tr>
+                                                    <tr>
+                                <td class="select"><input type="radio" name="test[version]" value="10" /></td>                                <td class="version">10</td>
+                                                                <td class="file"><a href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc18xOWUxXzEwLnppcA__.html" target="_blank">JurajPetras_10.zip</a></td>
+                                                                <td class="size">1.73 KiB</td>
+                                <td class="modified">15.04.2024 16:41:36</td>
+                                <td class="controlls">
+                                  <a class="button comment_edit" href="https://list.fmph.uniba.sk/tasks/solution_version_comment/412641.html" title="Pridať/upraviť komentár"><i class="fa fa-comment-o" aria-hidden="true"></i></a>
+                                                                    <a class="button" href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc18xOWUxXzEwLnppcA__.html" target="_blank" title="JurajPetras_10.zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                                                  </td>
+                            </tr>
+                                                    <tr>
+                                <td class="select"><input type="radio" name="test[version]" value="11" checked="checked" /></td>                                <td class="version">11</td>
+                                                                <td class="file"><a href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc183OGQ4XzExLnppcA__.html" target="_blank">JurajPetras_11.zip</a></td>
+                                                                <td class="size">6.12 KiB</td>
+                                <td class="modified">17.04.2024 20:56:25</td>
+                                <td class="controlls">
+                                  <a class="button comment_edit" href="https://list.fmph.uniba.sk/tasks/solution_version_comment/414110.html" title="Pridať/upraviť komentár"><i class="fa fa-comment-o" aria-hidden="true"></i></a>
+                                                                    <a class="button" href="https://list.fmph.uniba.sk/tasks/download_solution/5495/MjIyMV9KdXJhalBldHJhc183OGQ4XzExLnppcA__.html" target="_blank" title="JurajPetras_11.zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+                                                                  </td>
+                            </tr>
+                                                </tbody>
+                    </table>
+                                        <fieldset class="basefieldset">
+                        <legend>Testy</legend>
+                                                    <input type="hidden" name="select_test_type" value="python" id="select_test_type_id" />
+                                                                        <table class="solution_tests_table">
+                            <thead>
+                                <tr>
+                                    <th class="test_select"><input type="checkbox" class="select_all_tests" checked="checked" /></th>
+                                    <th class="test_name">Názov testu</th>
+                                    <th class="test_type">Jazyk</th>
+                                    <th class="test_subtype">Typ testu</th>
+                                    <th class="test_evaluation">Hodnotenie</th>                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5"><input type="submit" name="execute_tests" value="Spustiť vybrané testy" class="button" /></td>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                                                 
+                                                                                                <tr class="task_header test_task_3056">
+                                        <td class="task_name"><input type="checkbox" class="select_all_test_from_task" checked="checked" data-task="3056" /></td>
+                                    <td colspan="4" class="task_name">1. pprojl 03</td>
+                                </tr>
+                                                                                                <tr class="test_header test_type_python test_task_3056">
+                                    <td class="test_select"><input type="checkbox" name="test[id][]" value="1244" checked="checked" data-task="3056" class="test_select_checkbox" /></td>
+                                    <td class="test_name">test projl 03</td>
+                                    <td class="test_type">Python</td>
+                                    <td class="test_subtype">Unit test</td>
+                                    <td class="test_evaluation">Áno</td>                                </tr>
+                                                                                                                                                                                        </tbody>
+                        </table>
+                        <div id="tests_execution_area_id"></div>
+                    </fieldset>
+                                        </form>
+                    <div id="tests_queue_container_id">
+                    </div>                    <script type="text/javascript">
+                        var tests_object = {"3056":{"name":"1. pprojl 03","1244":{"name":"test projl 03 (Python \/ Unit test)"}}};
+                    </script>
+                </div>
+            </div>
+            </div></div>
+            <div class="clear"></div>
+        </div>
+        <div id="footer"><span>L.I.S.T. verzia 1.9.0. <span class="additional">Pôvodne navrhol a vytvoril Andrej Jursa v 2013 ako bakalársku prácu na škole Univerzita Komenského v Bratislave, Fakulta matematiky, fyziky a informatiky.</span></span></div>
+    </body>
+</html>

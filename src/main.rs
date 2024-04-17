@@ -1,6 +1,7 @@
 use std::path::{Path, PathBuf};
 
 use args::ListSubmitArgs;
+use chrono::{DateTime, NaiveDateTime};
 use clap::Parser;
 use colored::Colorize;
 use config::GlobalConfig;
@@ -48,8 +49,8 @@ fn main() -> eyre::Result<()> {
     let project_config_dir = project_config_dir.parent().unwrap();
 
     let mut client = None;
-    let (mut project_config, real_project_config_path) = match project_config_path {
-        Some(path) => (ProjectConfig::load(&path)?, path),
+    let (mut project_config, real_project_config_path) = match &project_config_path {
+        Some(path) => (ProjectConfig::load(path)?, path.clone()),
         None => {
             eprintln!(
                 "{}",
@@ -95,11 +96,7 @@ fn main() -> eyre::Result<()> {
         }
         Some(ListSubmitCommand::Clean) => {
             let cleaned = project_config.clean_files(project_config_dir)?;
-            eprintln!(
-                "{} {} files",
-                "Cleaned".green(),
-                cleaned.to_string().bold()
-            );
+            eprintln!("{} {} files", "Cleaned".green(), cleaned.to_string().bold());
             project_config.save(real_project_config_path.as_path())?;
             std::process::exit(0);
         }
@@ -109,25 +106,114 @@ fn main() -> eyre::Result<()> {
         }
     }
 
+    if project_config_path.is_none() {
+        if project_config.problem.files.is_empty() {
+            std::process::exit(0);
+        }
+
+        let submit_now = Confirm::new("Do you want to submit the project now?")
+            .with_default(false)
+            .prompt()?;
+
+        if !submit_now {
+            std::process::exit(0);
+        }
+    }
+
+    if project_config.problem.files.is_empty() {
+        eprintln!("{}", "No files present in the project configuration".red());
+        std::process::exit(1);
+    }
+
     let client = client.unwrap_or(create_client(&config, &args)?);
 
-    let courses = client.get_all_course().unwrap();
-    println!("{:#?}", courses);
-    //
-    // let problems = client.get_problems_for_course(courses.get(2).unwrap().id).unwrap();
-    // println!("{:#?}", problems);
-    //
-    // // client.run_test_for_submit(5374, 10).unwrap();
-    //
-    // let submit_form = client.get_submit_form(5374).unwrap();
-    // let queue = client.get_student_test_queue(5374, submit_form.student_id).unwrap();
-    //
-    // println!("{:#?}", queue);
-    //
-    // client.run_test_for_submit(5374, 10).unwrap();
-    // let result = client.get_test_result(queue.get(0).unwrap().id).unwrap();
-    //
-    // println!("{:#?}", result);
+    let mut buf = Vec::new();
+    {
+        let mut zip = zip::ZipWriter::new(std::io::Cursor::new(&mut buf));
+        let options =
+            zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Stored);
+        for file in project_config.problem.files {
+            let path = project_config_dir.join(file);
+            let file_name = path.file_name().unwrap().to_str().unwrap();
+            zip.start_file(file_name, options)?;
+
+            let mut file = std::fs::File::open(path)?;
+            std::io::copy(&mut file, &mut zip)?;
+        }
+        zip.finish()?;
+    }
+
+    let submit = ui::show_request("submit", || {
+        client.submit_solution(project_config.problem.problem_id, buf)
+    })?;
+
+    ui::show_request("run tests", || {
+        client.run_test_for_submit(project_config.problem.problem_id, submit.version)
+    })?;
+
+    let result_id = ui::show_request("results", || -> eyre::Result<u32> {
+        let now = chrono::Utc::now().naive_local();
+        let form = client.get_submit_form(project_config.problem.problem_id)?;
+
+        loop {
+            let queue = client
+                .get_student_test_queue(project_config.problem.problem_id, form.student_id)?;
+
+            let new = queue
+                .iter()
+                .filter(|test| test.start_time > now)
+                .max_by_key(|test| test.start_time);
+            let new = match new {
+                Some(new) => new,
+                None => continue,
+            };
+
+            if new.end_time.is_some() {
+                break Ok(new.id);
+            }
+        }
+    })?;
+
+    let result = ui::show_request("result", || client.get_test_result(result_id))?;
+
+    for problem in result.problems.iter() {
+        if problem.percentage >= 100.0 {
+            eprintln!(
+                "{} {}",
+                problem.name,
+                "ran successfully"
+            );
+            continue;
+        }
+        eprintln!(
+            "{} {}",
+            problem.name.red().bold(),
+            "failed".red()
+        );
+        eprintln!(
+            "{}",
+            problem.output.red()
+        );
+    }
+
+    eprintln!();
+    let max_len = result
+        .problems
+        .iter()
+        .map(|p| p.name.len() + 5)
+        .max()
+        .unwrap_or(0);
+
+    for problem in result.problems {
+        eprintln!(
+            "{: <width$} => points: {},  {}%",
+            problem.name.bold(),
+            problem.points.to_string().bold(),
+            problem.percentage.to_string().bold(),
+            width = max_len
+        );
+    }
+    eprintln!("Total points: {}", result.total_points.to_string().bold());
 
     Ok(())
 }
@@ -148,7 +234,9 @@ pub fn create_client(config: &GlobalConfig, args: &ListSubmitArgs) -> eyre::Resu
             (Some(auth), _, _) => auth,
         };
 
-        let client = ui::show_request("login", || ListApiClient::new_with_credentials(&auth.email, &auth.password));
+        let client = ui::show_request("login", || {
+            ListApiClient::new_with_credentials(&auth.email, &auth.password)
+        });
 
         match client {
             Ok(client) => {

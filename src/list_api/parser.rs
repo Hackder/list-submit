@@ -116,7 +116,7 @@ pub fn parse_submits(html: &str, problem_id: u32) -> Result<Vec<Submit>, ListPar
     let document = scraper::Html::parse_document(html);
 
     let submit_elements = document
-        .select(&Selector::parse("table.solutions_table tr").expect("valid selector"))
+        .select(&Selector::parse("table.solutions_table tbody tr").expect("valid selector"))
         .collect::<Vec<_>>();
 
     let submits = submit_elements
@@ -223,7 +223,15 @@ pub fn parse_test_queue(html: &str) -> Result<Vec<Test>, ListParserError> {
                 .unwrap();
 
             let href = id_element.value().attr("href").unwrap();
-            let id = href.split('/').last().unwrap().split('.').next().unwrap().parse().unwrap();
+            let id = href
+                .split('/')
+                .last()
+                .unwrap()
+                .split('.')
+                .next()
+                .unwrap()
+                .parse()
+                .unwrap();
 
             let cols = element
                 .select(&Selector::parse("td").expect("valid selector"))
@@ -232,8 +240,8 @@ pub fn parse_test_queue(html: &str) -> Result<Vec<Test>, ListParserError> {
             let start_time_el = cols.get(2).unwrap();
             let start_time = start_time_el.text().collect::<String>();
 
-            let start_time = chrono::NaiveDateTime::parse_from_str(&start_time, "%d.%m.%Y %H:%M:%S")
-                .unwrap();
+            let start_time =
+                chrono::NaiveDateTime::parse_from_str(&start_time, "%d.%m.%Y %H:%M:%S").unwrap();
 
             let end_time_el = cols.get(3).unwrap();
             let end_time = end_time_el.text().collect::<String>();
@@ -241,10 +249,7 @@ pub fn parse_test_queue(html: &str) -> Result<Vec<Test>, ListParserError> {
             let end_time = if end_time == "Ešte neukončené!" {
                 None
             } else {
-                Some(
-                    chrono::NaiveDateTime::parse_from_str(&end_time, "%d.%m.%Y %H:%M:%S")
-                        .unwrap(),
-                )
+                Some(chrono::NaiveDateTime::parse_from_str(&end_time, "%d.%m.%Y %H:%M:%S").unwrap())
             };
 
             Test {
@@ -267,7 +272,10 @@ pub fn parse_test_queue(html: &str) -> Result<Vec<Test>, ListParserError> {
 pub fn parse_test_result(html: &str) -> Result<TestResult, ListParserError> {
     let document = scraper::Html::parse_document(html);
     let total_points = document
-        .select(&Selector::parse("table.tests_result_sum_table > tbody > tr:nth-child(4) > td").unwrap())
+        .select(
+            &Selector::parse("table.tests_result_sum_table > tbody > tr:nth-child(4) > td")
+                .unwrap(),
+        )
         .next()
         .unwrap()
         .text()
@@ -292,7 +300,13 @@ pub fn parse_test_result(html: &str) -> Result<TestResult, ListParserError> {
                 .select(&Selector::parse("td").unwrap())
                 .collect::<Vec<_>>();
 
-            let name = items.get(0).unwrap().text().collect::<String>().trim().to_owned();
+            let name = items
+                .get(0)
+                .unwrap()
+                .text()
+                .collect::<String>()
+                .trim()
+                .to_owned();
             let percentage = items
                 .get(1)
                 .unwrap()
@@ -303,7 +317,14 @@ pub fn parse_test_result(html: &str) -> Result<TestResult, ListParserError> {
                 .unwrap()
                 .parse()
                 .unwrap();
-            let points = items.get(2).unwrap().text().collect::<String>().trim().parse().unwrap();
+            let points = items
+                .get(2)
+                .unwrap()
+                .text()
+                .collect::<String>()
+                .trim()
+                .parse()
+                .unwrap();
 
             let output = output_element.text().collect::<String>().trim().to_owned();
 
@@ -320,4 +341,93 @@ pub fn parse_test_result(html: &str) -> Result<TestResult, ListParserError> {
         total_points,
         problems,
     })
+}
+
+#[cfg(test)]
+mod test {
+    pub use super::*;
+
+    #[test]
+    pub fn test_parse_submits() {
+        let html = include_str!("parser_test_data/12_submits_3_tests.html");
+
+        let submits = parse_submits(html, 5365).unwrap();
+        
+        assert_eq!(submits.len(), 12);
+
+        assert_eq!(submits, vec![
+            Submit {
+                id: "MjIyMV9KdXJhalBldHJhc183ZDA0XzEuemlw".to_owned(),
+                version: 1,
+                name: "JurajPetras_1.zip".to_owned(),
+                problem_id: 5365,
+            },          
+            Submit {
+                id: "MjIyMV9KdXJhalBldHJhc185MDAxXzIuemlw".to_owned(),
+                version: 2,
+                name: "JurajPetras_2.zip".to_owned(),
+                problem_id: 5365,
+            },
+            Submit {
+                id: "MjIyMV9KdXJhalBldHJhc183MGZmXzMuemlw".to_owned(),
+                version: 3,
+                name: "JurajPetras_3.zip".to_owned(),
+                problem_id: 5365,
+            },
+            Submit {
+                id: "MjIyMV9KdXJhalBldHJhc19iM2U1XzQuemlw".to_owned(),
+                version: 4,
+                name: "JurajPetras_4.zip".to_owned(),
+                problem_id: 5365,
+            },
+            Submit {
+                id: "MjIyMV9KdXJhalBldHJhc19mYmIxXzUuemlw".to_owned(),
+                version: 5,
+                name: "JurajPetras_5.zip".to_owned(),
+                problem_id: 5365,
+            },
+            Submit {
+                id: "MjIyMV9KdXJhalBldHJhc180YzJiXzYuemlw".to_owned(),
+                version: 6,
+                name: "JurajPetras_6.zip".to_owned(),
+                problem_id: 5365,
+            },
+            Submit {
+                id: "MjIyMV9KdXJhalBldHJhc183MDZmXzcuemlw".to_owned(),
+                version: 7,
+                name: "JurajPetras_7.zip".to_owned(),
+                problem_id: 5365,
+            },
+            Submit {
+                id: "MjIyMV9KdXJhalBldHJhc19kMDdiXzguemlw".to_owned(),
+                version: 8,
+                name: "JurajPetras_8.zip".to_owned(),
+                problem_id: 5365,
+            },
+            Submit {
+                id: "MjIyMV9KdXJhalBldHJhc18xNTE5Xzkuemlw".to_owned(),
+                version: 9,
+                name: "JurajPetras_9.zip".to_owned(),
+                problem_id: 5365,
+            },
+            Submit {
+                id: "MjIyMV9KdXJhalBldHJhc18xZTZlXzEwLnppcA__".to_owned(),
+                version: 10,
+                name: "JurajPetras_10.zip".to_owned(),
+                problem_id: 5365,
+            },
+            Submit {
+                id: "MjIyMV9KdXJhalBldHJhc19mODk3XzExLnppcA__".to_owned(),
+                version: 11,
+                name: "JurajPetras_11.zip".to_owned(),
+                problem_id: 5365,
+            },
+            Submit {
+                id: "MjIyMV9KdXJhalBldHJhc19iMjhmXzEyLnppcA__".to_owned(),
+                version: 12,
+                name: "JurajPetras_12.zip".to_owned(),
+                problem_id: 5365,
+            },
+        ]);
+    }
 }
