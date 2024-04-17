@@ -12,11 +12,22 @@ pub struct ListApiClient {
     base_url: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum ListApiError {
+    #[error("http error: {0}")]
     HttpError(reqwest::Error),
+
+    #[error("parse error: {0}")]
     ParseError(parser::ListParserError),
-    LoginFailed(String),
+
+    #[error("invalid credentials")]
+    InvalidCredentials,
+
+    #[error("failed to obtain session cookie")]
+    NoCookie,
+
+    #[error("list returned false status")]
+    ResponseStatusFalse,
 }
 
 impl From<reqwest::Error> for ListApiError {
@@ -46,14 +57,12 @@ impl ListApiClient {
 
         let cookie = response.cookies().find(|c| c.name() == "list_session");
         if cookie.is_none() {
-            return Err(ListApiError::LoginFailed(
-                "Failed to obtain session cookie".to_owned(),
-            ));
+            return Err(ListApiError::NoCookie);
         }
 
         let logged_in = response.text()?.contains("Môj účet");
         if !logged_in {
-            return Err(ListApiError::LoginFailed("Failed to log in".to_owned()));
+            return Err(ListApiError::InvalidCredentials);
         }
 
         Ok(Self {
@@ -89,9 +98,7 @@ impl ListApiClient {
         let body: Response = response.json()?;
 
         if !body.status {
-            return Err(ListApiError::LoginFailed(
-                "Failed to mark course as active".to_owned(),
-            ));
+            return Err(ListApiError::ResponseStatusFalse);
         }
         Ok(())
     }
@@ -173,9 +180,7 @@ impl ListApiClient {
         let body: Response = response.json()?;
 
         if !body.status {
-            return Err(ListApiError::LoginFailed(
-                "Failed to parse response".to_owned(),
-            ));
+            return Err(ListApiError::ResponseStatusFalse);
         }
 
         Ok(())

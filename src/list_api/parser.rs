@@ -2,8 +2,9 @@ use scraper::Selector;
 
 use super::models::{Course, Problem, Submit, SubmitForm, Test, TestResult, TestResultProblem};
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum ListParserError {
+    #[error("parse error: {0}")]
     ParseError(String),
 }
 
