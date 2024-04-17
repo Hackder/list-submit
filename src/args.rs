@@ -3,6 +3,11 @@ use clap::{Args, Parser, Subcommand};
 #[derive(Debug, Parser)]
 #[command(name = "list-submit")]
 pub struct ListSubmitArgs {
+    /// Specify the project to work with
+    /// A project is the name of a directory containing a config file
+    #[clap(short, long, verbatim_doc_comment)]
+    pub project: Option<String>,
+
     #[command(subcommand)]
     pub subcommand: Option<ListSubmitCommand>,
 }
@@ -19,24 +24,20 @@ pub enum ListSubmitCommand {
 
 #[derive(Debug, Args, Clone)]
 pub struct AddCommand {
-    /// Add a file to the current project
+    /// Add files to the current project
     /// If nothing or a path to a direcotry is specified,
     /// a multiselect window with all the files will show up
-    /// If a file path or a glob pattern is specified, the matching files
-    /// will be added
     #[clap(verbatim_doc_comment)]
-    pub path: Option<String>,
+    pub path: Vec<String>,
 }
 
 #[derive(Debug, Args, Clone)]
 pub struct RemoveCommand {
-    /// Remove a file from the current project
+    /// Remove files from the current project
     /// If nothing is specified, a multiselect window with all the files
     /// currently present will show up
-    /// If a file path or a glob pattern is specified, the matching files
-    /// will be removed
     #[clap(verbatim_doc_comment)]
-    pub path: Option<String>,
+    pub path: Vec<String>,
 }
 
 #[derive(Debug, Args, Clone)]
