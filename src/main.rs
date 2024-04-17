@@ -125,7 +125,10 @@ fn main() -> eyre::Result<()> {
         std::process::exit(1);
     }
 
-    let client = client.unwrap_or(create_client(&config, &args)?);
+    let client = match client {
+        Some(client) => client,
+        None => create_client(&config, &args)?,
+    };
 
     let mut buf = Vec::new();
     {
