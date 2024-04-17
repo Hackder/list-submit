@@ -4,7 +4,7 @@ use args::ListSubmitArgs;
 use clap::Parser;
 use colored::Colorize;
 use config::GlobalConfig;
-use inquire::{Confirm, Password, Select, Text};
+use inquire::{Confirm, MultiSelect, Password, Select, Text};
 use list_api::api::{ListApiClient, ListApiError};
 
 use crate::{
@@ -14,6 +14,7 @@ use crate::{
 
 mod args;
 mod config;
+mod detectors;
 mod list_api;
 mod ui;
 
@@ -56,7 +57,7 @@ fn main() -> eyre::Result<()> {
                 "No project found, creating new one in this directory".yellow()
             );
             client = Some(create_client(&config, &args)?);
-            let result = create_project_config(client.as_ref().expect("client must exist"))?;
+            let result = create_project_config(client.as_ref().expect("client must exist"), &cwd)?;
             result
         }
     };
@@ -111,7 +112,7 @@ fn main() -> eyre::Result<()> {
         }
 
         let submit_now = Confirm::new("Do you want to submit the project now?")
-            .with_default(false)
+            .with_default(true)
             .prompt()?;
 
         if !submit_now {
@@ -185,15 +186,8 @@ fn main() -> eyre::Result<()> {
             );
             continue;
         }
-        eprintln!(
-            "{} {}",
-            problem.name.red().bold(),
-            "failed".red()
-        );
-        eprintln!(
-            "{}",
-            problem.output.red()
-        );
+        eprintln!("{} {}", problem.name.red().bold(), "failed".red());
+        eprintln!("{}", problem.output.red());
     }
 
     eprintln!();
@@ -269,7 +263,10 @@ pub fn create_client(config: &GlobalConfig, args: &ListSubmitArgs) -> eyre::Resu
     }
 }
 
-pub fn create_project_config(client: &ListApiClient) -> eyre::Result<(ProjectConfig, PathBuf)> {
+pub fn create_project_config(
+    client: &ListApiClient,
+    cwd: &PathBuf,
+) -> eyre::Result<(ProjectConfig, PathBuf)> {
     let courses = ui::show_request("courses", || client.get_all_course())?;
 
     let course = Select::new("Select a course", courses).prompt()?;
@@ -278,14 +275,54 @@ pub fn create_project_config(client: &ListApiClient) -> eyre::Result<(ProjectCon
 
     let problem = Select::new("Select a problem", problems).prompt()?;
 
-    // TODO: Run detectors
+    let detectors = detectors::get_detectors();
+
+    let result = detectors
+        .into_iter()
+        .filter_map(|detector| {
+            let res = match detector.detect(cwd) {
+                Ok(res) => res,
+                Err(err) => {
+                    log::error!("Error while detecting: {}", err);
+                    return None;
+                }
+            };
+
+            Some((res, detector))
+        })
+        .max_by_key(|(res, _)| (res.probability * 1000.0) as i32);
+
+    let files = match result {
+        Some((res, detector)) => {
+            eprintln!(
+                "{} {} {}",
+                "Detected".green(),
+                detector.name().bold(),
+                format!("with probability: {:.0}%", res.probability * 100.0).bold()
+            );
+            res.files
+        }
+        None => {
+            eprintln!("{}", "Could not detect project automatically".yellow());
+            vec![]
+        }
+    };
+
+    let files = files
+        .into_iter()
+        .map(|p| p.to_string_lossy().to_string())
+        .collect();
+
+    let files = MultiSelect::new("Select autodetected files to keep", files)
+        .with_all_selected_by_default()
+        .prompt()?;
 
     let (project_config, path) = ProjectConfig::create(
         std::env::current_dir()?.as_path(),
         course.id,
         problem.id,
         &problem.name,
-        &vec![],
+        &files,
     )?;
 
     Ok((project_config, path))
