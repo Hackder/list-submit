@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use clap::{Args, Parser, Subcommand};
 
 #[derive(Debug, Parser)]
@@ -16,8 +18,9 @@ pub struct ListSubmitArgs {
 #[derive(Debug, Subcommand, Clone)]
 pub enum ListSubmitCommand {
     Add(AddCommand),
-    Remove(RemoveCommand),
-    Submit(SubmitCommand),
+    /// Shows interactive multiselect window to remove files
+    Files,
+    Submit,
     Auth,
     Clean,
 }
@@ -28,23 +31,6 @@ pub struct AddCommand {
     /// If nothing or a path to a direcotry is specified,
     /// a multiselect window with all the files will show up
     #[clap(verbatim_doc_comment)]
-    pub path: Vec<String>,
+    pub files: Vec<PathBuf>,
 }
 
-#[derive(Debug, Args, Clone)]
-pub struct RemoveCommand {
-    /// Remove files from the current project
-    /// If nothing is specified, a multiselect window with all the files
-    /// currently present will show up
-    #[clap(verbatim_doc_comment)]
-    pub path: Vec<String>,
-}
-
-#[derive(Debug, Args, Clone)]
-pub struct SubmitCommand {
-    /// Submit the project
-    /// If a name is specified, a child directory with that name containing
-    /// the config file will be treated as the active project
-    #[clap(verbatim_doc_comment)]
-    pub name: Option<String>,
-}

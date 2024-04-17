@@ -1,3 +1,5 @@
+use std::fmt::{self, Display, Formatter};
+
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
@@ -7,11 +9,23 @@ pub struct Course {
     pub name: String,
 }
 
+impl Display for Course {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.name)
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Problem {
     pub id: u32,
     pub full_id: String,
     pub name: String,
+}
+
+impl Display for Problem {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.name)
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
