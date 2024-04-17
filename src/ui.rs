@@ -1,8 +1,6 @@
 use spinners::Spinner;
 use colored::Colorize;
 
-use crate::list_api::api::ListApiError;
-
 pub fn with_spinner<T>(msg: &str, task: impl FnOnce() -> T) -> T {
     let msg = msg.to_owned();
     let mut spinner = Spinner::new(spinners::Spinners::Arc, msg.clone());

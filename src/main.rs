@@ -1,7 +1,6 @@
 use std::path::{Path, PathBuf};
 
 use args::ListSubmitArgs;
-use chrono::{DateTime, NaiveDateTime};
 use clap::Parser;
 use colored::Colorize;
 use config::GlobalConfig;
@@ -180,8 +179,8 @@ fn main() -> eyre::Result<()> {
         if problem.percentage >= 100.0 {
             eprintln!(
                 "{} {}",
-                problem.name,
-                "ran successfully"
+                problem.name.truecolor(128, 128, 128).bold(),
+                "ran successfully".truecolor(128, 128, 128).bold()
             );
             continue;
         }
