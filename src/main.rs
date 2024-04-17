@@ -15,12 +15,17 @@ use crate::{
 mod args;
 mod config;
 mod list_api;
+mod ui;
 
 fn main() -> eyre::Result<()> {
     color_eyre::install()?;
     let args = ListSubmitArgs::parse();
 
-    eprintln!("{} {}", "List Submit CLI".green(), env!("CARGO_PKG_VERSION").bold());
+    eprintln!(
+        "{} {}",
+        "List Submit CLI".green(),
+        env!("CARGO_PKG_VERSION").bold()
+    );
 
     let config = match GlobalConfig::load()? {
         Some(config) => config,
@@ -46,7 +51,10 @@ fn main() -> eyre::Result<()> {
     let (mut project_config, real_project_config_path) = match project_config_path {
         Some(path) => (ProjectConfig::load(&path)?, path),
         None => {
-            eprintln!("{}", "No project found, creating new one in this directory".yellow());
+            eprintln!(
+                "{}",
+                "No project found, creating new one in this directory".yellow()
+            );
             client = Some(create_client(&config, &args)?);
             let result = create_project_config(client.as_ref().expect("client must exist"))?;
             result
@@ -141,7 +149,7 @@ pub fn create_client(config: &GlobalConfig, args: &ListSubmitArgs) -> eyre::Resu
             (Some(auth), _, _) => auth,
         };
 
-        let client = ListApiClient::new_with_credentials(&auth.email, &auth.password);
+        let client = ui::show_request("login", || ListApiClient::new_with_credentials(&auth.email, &auth.password));
 
         match client {
             Ok(client) => {
@@ -175,11 +183,11 @@ pub fn create_client(config: &GlobalConfig, args: &ListSubmitArgs) -> eyre::Resu
 }
 
 pub fn create_project_config(client: &ListApiClient) -> eyre::Result<(ProjectConfig, PathBuf)> {
-    let courses = client.get_all_course()?;
+    let courses = ui::show_request("courses", || client.get_all_course())?;
 
     let course = Select::new("Select a course", courses).prompt()?;
 
-    let problems = client.get_problems_for_course(course.id)?;
+    let problems = ui::show_request("problems", || client.get_problems_for_course(course.id))?;
 
     let problem = Select::new("Select a problem", problems).prompt()?;
 
