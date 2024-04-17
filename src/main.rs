@@ -313,7 +313,8 @@ pub fn create_project_config(
             res.files
         }
         None => {
-            eprintln!("{}", "Could not detect project automatically".yellow());
+            eprintln!("{}", "Could not detect project automatically.".yellow());
+            eprintln!("{}", "Add files using the `add` subcommand!".yellow());
             vec![]
         }
     };
