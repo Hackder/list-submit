@@ -132,6 +132,7 @@ fn main() -> eyre::Result<()> {
         let options =
             zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Stored);
         for file in project_config.problem.files {
+            eprintln!("Adding file: {}", file);
             let path = project_config_dir.join(file);
             let file_name = path.file_name().unwrap().to_str().unwrap();
             zip.start_file(file_name, options)?;
@@ -179,7 +180,7 @@ fn main() -> eyre::Result<()> {
         if problem.percentage >= 100.0 {
             eprintln!(
                 "{} {}",
-                problem.name.truecolor(128, 128, 128).bold(),
+                problem.name.truecolor(128, 128, 128),
                 "ran successfully".truecolor(128, 128, 128).bold()
             );
             continue;
