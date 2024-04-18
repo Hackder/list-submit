@@ -169,7 +169,10 @@ fn main() -> eyre::Result<()> {
                 .max_by_key(|test| test.start_time);
             let new = match new {
                 Some(new) => new,
-                None => continue,
+                None => {
+                    std::thread::sleep(std::time::Duration::from_millis(500));
+                    continue;
+                }
             };
 
             if new.end_time.is_some() {
