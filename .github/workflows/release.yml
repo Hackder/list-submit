@@ -1,0 +1,77 @@
+name: Release Rust Application
+
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+.*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        arch: [x86_64, aarch64]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Install cross compilers (Linux only)
+        if: runner.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends qemu-user-static build-essential
+
+      - name: Configure target (Linux only)
+        if: runner.os == 'ubuntu-latest'
+        run: |
+          echo "export RUSTFLAGS=-C target=${{ matrix.arch }}-unknown-linux-gnu" >> $GITHUB_ENV
+
+      - name: Configure target (Windows only)
+        if: runner.os == 'windows-latest'
+        run: |
+          echo "export RUSTFLAGS=-C target=${{ matrix.arch }}-pc-windows-gnu" >> $GITHUB_ENV
+
+      - name: Configure target (macOS only)
+        if: runner.os == 'macos-latest'
+        run: |
+          echo "export RUSTFLAGS=-C target=${{ matrix.arch }}-apple-darwin" >> $GITHUB_ENV
+
+      - name: Cargo build
+        run: cargo build --release
+
+      - name: Package artifacts
+        run: |
+          mkdir -p artifacts/${{ runner.os }}_${{ matrix.arch }}
+          cp target/${{ matrix.arch }}/release/* artifacts/${{ runner.os }}_${{ matrix.arch }}/
+
+  # Create release after successful build
+  create_release:
+    needs: build
+    if: success()  # Only run if all build jobs succeed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needs write access to repo
+        with:
+          tag_name: ${{ github.ref }}  # Use the pushed tag name
+          release_name: ${{ github.ref }}  # Release name same as tag
+          body: |  # Optional release description
+            Built binaries for:
+            * ${{ matrix.os }} - ${{ matrix.arch }}
+
+      - name: Upload artifacts to release
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: artifacts/*
+
+
