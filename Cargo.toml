@@ -1,5 +1,5 @@
 [package]
-name = "list-submit-rs"
+name = "list-submit"
 version = "0.1.0"
 edition = "2021"
 
