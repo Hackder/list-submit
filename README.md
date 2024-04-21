@@ -1,18 +1,16 @@
 ![list-submit](https://github.com/Hackder/list-submit/blob/main/docs/images/list-submit-logo.png)
 
 list-submit is a simple cli utility, that automates submiting problem solutions
-to the L.I.S.T. online platform, used by the Faculty of Mathematics and Informatics
+to the L.I.S.T. online platform, used by the Faculty of Mathematics and Informatics at
 Comenius University in Bratislava.
 
 # Installation
 
 ## MacOS / Linux
 
-For easier installation, you can use the provided installation script.
+Copy this command to your terminal
 ```bash
-git clone https://github.com/Hackder/list-submit.git
-cd list-submit
-source install.sh
+
 ```
 
 ## Windows

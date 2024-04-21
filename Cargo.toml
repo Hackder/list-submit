@@ -1,0 +1,23 @@
+[package]
+name = "list-submit-rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = { version = "0.4.38", features = ["serde"] }
+clap = { version = "4.5.4", features = ["derive"] }
+color-eyre = "0.6.3"
+colored = "2.1.0"
+eyre = "0.6.12"
+inquire = "0.7.4"
+itertools = "0.12.1"
+log = "0.4.21"
+pathdiff = "0.2.1"
+reqwest = { version = "0.12.3", features = ["blocking", "cookies", "json", "multipart"] }
+scraper = "0.19.0"
+serde = { version = "1.0.197", features = ["derive"] }
+spinners = "4.1.1"
+thiserror = "1.0.58"
+toml_edit = { version = "0.22.9", features = ["serde"] }
+walkdir = "2.5.0"
+zip = "0.6.6"
