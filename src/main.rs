@@ -204,7 +204,7 @@ fn main() -> eyre::Result<()> {
         .max()
         .unwrap_or(0);
 
-    for problem in result.problems {
+    for problem in result.problems.iter() {
         eprintln!(
             "{: <width$} => points: {},  {}%",
             problem.name.bold(),
@@ -213,7 +213,7 @@ fn main() -> eyre::Result<()> {
             width = max_len
         );
     }
-    eprintln!("Total points: {}", result.total_points.to_string().bold());
+    eprintln!("Total points: {}", result.total_points().to_string().bold());
 
     Ok(())
 }

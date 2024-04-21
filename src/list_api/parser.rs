@@ -271,9 +271,22 @@ pub fn parse_test_queue(html: &str) -> Result<Vec<Test>, ListParserError> {
 
 pub fn parse_test_result(html: &str) -> Result<TestResult, ListParserError> {
     let document = scraper::Html::parse_document(html);
-    let total_points = document
+    let normal_points: f32 = document
         .select(
             &Selector::parse("table.tests_result_sum_table > tbody > tr:nth-child(4) > td")
+                .unwrap(),
+        )
+        .next()
+        .unwrap()
+        .text()
+        .collect::<String>()
+        .trim()
+        .parse()
+        .unwrap();
+
+    let bonus_points: f32 = document
+        .select(
+            &Selector::parse("table.tests_result_sum_table > tbody > tr:nth-child(5) > td")
                 .unwrap(),
         )
         .next()
@@ -338,7 +351,8 @@ pub fn parse_test_result(html: &str) -> Result<TestResult, ListParserError> {
         .collect::<Vec<_>>();
 
     Ok(TestResult {
-        total_points,
+        normal_points,
+        bonus_points,
         problems,
     })
 }
@@ -352,82 +366,85 @@ mod test {
         let html = include_str!("parser_test_data/12_submits_3_tests.html");
 
         let submits = parse_submits(html, 5365).unwrap();
-        
+
         assert_eq!(submits.len(), 12);
 
-        assert_eq!(submits, vec![
-            Submit {
-                id: "MjIyMV9KdXJhalBldHJhc183ZDA0XzEuemlw".to_owned(),
-                version: 1,
-                name: "JurajPetras_1.zip".to_owned(),
-                problem_id: 5365,
-            },          
-            Submit {
-                id: "MjIyMV9KdXJhalBldHJhc185MDAxXzIuemlw".to_owned(),
-                version: 2,
-                name: "JurajPetras_2.zip".to_owned(),
-                problem_id: 5365,
-            },
-            Submit {
-                id: "MjIyMV9KdXJhalBldHJhc183MGZmXzMuemlw".to_owned(),
-                version: 3,
-                name: "JurajPetras_3.zip".to_owned(),
-                problem_id: 5365,
-            },
-            Submit {
-                id: "MjIyMV9KdXJhalBldHJhc19iM2U1XzQuemlw".to_owned(),
-                version: 4,
-                name: "JurajPetras_4.zip".to_owned(),
-                problem_id: 5365,
-            },
-            Submit {
-                id: "MjIyMV9KdXJhalBldHJhc19mYmIxXzUuemlw".to_owned(),
-                version: 5,
-                name: "JurajPetras_5.zip".to_owned(),
-                problem_id: 5365,
-            },
-            Submit {
-                id: "MjIyMV9KdXJhalBldHJhc180YzJiXzYuemlw".to_owned(),
-                version: 6,
-                name: "JurajPetras_6.zip".to_owned(),
-                problem_id: 5365,
-            },
-            Submit {
-                id: "MjIyMV9KdXJhalBldHJhc183MDZmXzcuemlw".to_owned(),
-                version: 7,
-                name: "JurajPetras_7.zip".to_owned(),
-                problem_id: 5365,
-            },
-            Submit {
-                id: "MjIyMV9KdXJhalBldHJhc19kMDdiXzguemlw".to_owned(),
-                version: 8,
-                name: "JurajPetras_8.zip".to_owned(),
-                problem_id: 5365,
-            },
-            Submit {
-                id: "MjIyMV9KdXJhalBldHJhc18xNTE5Xzkuemlw".to_owned(),
-                version: 9,
-                name: "JurajPetras_9.zip".to_owned(),
-                problem_id: 5365,
-            },
-            Submit {
-                id: "MjIyMV9KdXJhalBldHJhc18xZTZlXzEwLnppcA__".to_owned(),
-                version: 10,
-                name: "JurajPetras_10.zip".to_owned(),
-                problem_id: 5365,
-            },
-            Submit {
-                id: "MjIyMV9KdXJhalBldHJhc19mODk3XzExLnppcA__".to_owned(),
-                version: 11,
-                name: "JurajPetras_11.zip".to_owned(),
-                problem_id: 5365,
-            },
-            Submit {
-                id: "MjIyMV9KdXJhalBldHJhc19iMjhmXzEyLnppcA__".to_owned(),
-                version: 12,
-                name: "JurajPetras_12.zip".to_owned(),
-                problem_id: 5365,
-            },
-        ]);
+        assert_eq!(
+            submits,
+            vec![
+                Submit {
+                    id: "MjIyMV9KdXJhalBldHJhc183ZDA0XzEuemlw".to_owned(),
+                    version: 1,
+                    name: "JurajPetras_1.zip".to_owned(),
+                    problem_id: 5365,
+                },
+                Submit {
+                    id: "MjIyMV9KdXJhalBldHJhc185MDAxXzIuemlw".to_owned(),
+                    version: 2,
+                    name: "JurajPetras_2.zip".to_owned(),
+                    problem_id: 5365,
+                },
+                Submit {
+                    id: "MjIyMV9KdXJhalBldHJhc183MGZmXzMuemlw".to_owned(),
+                    version: 3,
+                    name: "JurajPetras_3.zip".to_owned(),
+                    problem_id: 5365,
+                },
+                Submit {
+                    id: "MjIyMV9KdXJhalBldHJhc19iM2U1XzQuemlw".to_owned(),
+                    version: 4,
+                    name: "JurajPetras_4.zip".to_owned(),
+                    problem_id: 5365,
+                },
+                Submit {
+                    id: "MjIyMV9KdXJhalBldHJhc19mYmIxXzUuemlw".to_owned(),
+                    version: 5,
+                    name: "JurajPetras_5.zip".to_owned(),
+                    problem_id: 5365,
+                },
+                Submit {
+                    id: "MjIyMV9KdXJhalBldHJhc180YzJiXzYuemlw".to_owned(),
+                    version: 6,
+                    name: "JurajPetras_6.zip".to_owned(),
+                    problem_id: 5365,
+                },
+                Submit {
+                    id: "MjIyMV9KdXJhalBldHJhc183MDZmXzcuemlw".to_owned(),
+                    version: 7,
+                    name: "JurajPetras_7.zip".to_owned(),
+                    problem_id: 5365,
+                },
+                Submit {
+                    id: "MjIyMV9KdXJhalBldHJhc19kMDdiXzguemlw".to_owned(),
+                    version: 8,
+                    name: "JurajPetras_8.zip".to_owned(),
+                    problem_id: 5365,
+                },
+                Submit {
+                    id: "MjIyMV9KdXJhalBldHJhc18xNTE5Xzkuemlw".to_owned(),
+                    version: 9,
+                    name: "JurajPetras_9.zip".to_owned(),
+                    problem_id: 5365,
+                },
+                Submit {
+                    id: "MjIyMV9KdXJhalBldHJhc18xZTZlXzEwLnppcA__".to_owned(),
+                    version: 10,
+                    name: "JurajPetras_10.zip".to_owned(),
+                    problem_id: 5365,
+                },
+                Submit {
+                    id: "MjIyMV9KdXJhalBldHJhc19mODk3XzExLnppcA__".to_owned(),
+                    version: 11,
+                    name: "JurajPetras_11.zip".to_owned(),
+                    problem_id: 5365,
+                },
+                Submit {
+                    id: "MjIyMV9KdXJhalBldHJhc19iMjhmXzEyLnppcA__".to_owned(),
+                    version: 12,
+                    name: "JurajPetras_12.zip".to_owned(),
+                    problem_id: 5365,
+                },
+            ]
+        );
     }
 }

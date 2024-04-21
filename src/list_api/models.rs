@@ -53,8 +53,15 @@ pub struct SubmitForm {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct TestResult {
-    pub total_points: f32,
+    pub normal_points: f32,
+    pub bonus_points: f32,
     pub problems: Vec<TestResultProblem>,
+}
+
+impl TestResult {
+    pub fn total_points(&self) -> f32 {
+        self.normal_points + self.bonus_points
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
