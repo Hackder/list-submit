@@ -20,7 +20,7 @@ pub fn get_global_config_path() -> Result<String, VarError> {
 #[cfg(target_os = "windows")]
 pub fn get_global_config_path() -> Result<String, VarError> {
     let home_dir = std::env::var("USERPROFILE")?;
-    Ok(format!("{}/AppData/Roaming/list-cli/config.toml", home_dir))
+    Ok(format!("{}/AppData/Roaming/list-submit/config.toml", home_dir))
 }
 
 fn create_from_template(path: &Path, template: &str) -> eyre::Result<()> {
