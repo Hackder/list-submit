@@ -38,7 +38,7 @@ sudo mv /tmp/list-submit /usr/local/bin/lsbm
 Invoke-WebRequest -Uri ((Invoke-WebRequest -Uri 'https://api.github.com/repos/Hackder/list-submit/releases/latest' | ConvertFrom-Json).assets | Where-Object { $_.name -eq 'list-submit-x86_64-pc-windows-msvc.zip' }).browser_download_url -OutFile "$env:temp\list-submit-download.zip"
 Expand-Archive -Path "$env:temp\list-submit-download.zip" -DestinationPath "$env:appdata\list-submit"
 Move-Item "$env:appdata\list-submit\list-submit.exe" "$env:appdata\list-submit\lsbm.exe"
-setx PATH "$env:PATH;$env:temp\list-submit"
+setx PATH "$env:PATH;$env:appdata\list-submit"
 ```
 
 # Quick start
