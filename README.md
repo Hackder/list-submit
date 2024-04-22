@@ -34,6 +34,7 @@ sudo mv /tmp/list-submit /usr/local/bin/lsbm
 
 ## Windows
 
+Copy the following command to your PowerShell terminal:
 ```powershell
 Invoke-WebRequest -Uri ((Invoke-WebRequest -Uri 'https://api.github.com/repos/Hackder/list-submit/releases/latest' | ConvertFrom-Json).assets | Where-Object { $_.name -eq 'list-submit-x86_64-pc-windows-msvc.zip' }).browser_download_url -OutFile "$env:temp\list-submit-download.zip"
 Expand-Archive -Path "$env:temp\list-submit-download.zip" -DestinationPath "$env:appdata\list-submit"
