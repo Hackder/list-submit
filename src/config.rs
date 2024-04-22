@@ -332,7 +332,6 @@ impl ProjectConfig {
             .collect::<Vec<_>>();
 
         let picked = MultiSelect::new("Select files to add", files)
-            .with_vim_mode(true)
             .with_default(&default)
             .prompt()?;
 
@@ -345,7 +344,6 @@ impl ProjectConfig {
 
     pub fn files_menu_interactive(&mut self) -> eyre::Result<()> {
         let picked = MultiSelect::new("Deselect files to remove", self.problem.files.clone())
-            .with_vim_mode(true)
             .with_all_selected_by_default()
             .prompt()?;
 
