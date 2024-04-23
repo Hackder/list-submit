@@ -23,6 +23,7 @@ pub enum ListSubmitCommand {
     Submit,
     Auth,
     Clean,
+    Update,
 }
 
 #[derive(Debug, Args, Clone)]

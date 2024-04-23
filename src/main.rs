@@ -6,6 +6,7 @@ use colored::Colorize;
 use config::GlobalConfig;
 use inquire::{Confirm, MultiSelect, Password, Select, Text};
 use list_api::api::{ListApiClient, ListApiError};
+use self_update::cargo_crate_version;
 
 use crate::{
     args::ListSubmitCommand,
@@ -36,6 +37,24 @@ fn main() -> eyre::Result<()> {
             cfg
         }
     };
+
+    if let Some(ListSubmitCommand::Update) = &args.subcommand {
+        let status = self_update::backends::github::Update::configure()
+            .repo_owner("Hackder")
+            .repo_name("list-submit")
+            .bin_name("list-submit")
+            .current_version(cargo_crate_version!())
+            .show_download_progress(true)
+            .build()?
+            .update()?;
+
+        if status.updated() {
+            eprintln!("{} {}", "Updated to version: ".green(), status.version());
+        } else {
+            eprintln!("{}", "No update available".yellow());
+        }
+        std::process::exit(0);
+    }
 
     let cwd = std::env::current_dir()?;
     let project_config_path = match &args.project {
@@ -100,10 +119,10 @@ fn main() -> eyre::Result<()> {
             project_config.save(real_project_config_path.as_path())?;
             std::process::exit(0);
         }
-        Some(ListSubmitCommand::Submit) | None => {}
-        Some(ListSubmitCommand::Auth) => {
+        Some(ListSubmitCommand::Auth) | Some(ListSubmitCommand::Update) => {
             return Err(eyre::eyre!("Auth command should not be called here"));
         }
+        Some(ListSubmitCommand::Submit) | None => {}
     }
 
     if project_config_path.is_none() {
