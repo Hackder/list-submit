@@ -122,12 +122,11 @@ pub fn parse_submits(html: &str, problem_id: u32) -> Result<Vec<Submit>, ListPar
     let submits = submit_elements
         .iter()
         .map(|element| {
-            let input = element
-                .select(&Selector::parse("input").expect("valid selector"))
+            let version = element
+                .select(&Selector::parse("td.version").expect("valid selector"))
                 .next()
+                .map(|input| input.text().collect::<String>().trim().parse().unwrap())
                 .unwrap();
-
-            let version = input.value().attr("value").unwrap().parse().unwrap();
 
             let td = element
                 .select(&Selector::parse("td.file").expect("valid selector"))
