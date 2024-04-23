@@ -19,7 +19,7 @@ pub fn get_detectors() -> Vec<Box<dyn Detector>> {
 
 pub struct PythonDetector;
 
-static CODE_EXTENSIONS: [&'static str; 9] =
+static CODE_EXTENSIONS: [&str; 9] =
     ["py", "java", "cpp", "c", "h", "hpp", "cc", "kt", "hs"];
 
 pub fn is_program_file(path: &Path) -> bool {
@@ -136,7 +136,7 @@ fn has_list_header_comment(file_path: &Path) -> bool {
     let lines = lines.lines().take(3).collect::<Vec<_>>();
 
     lines.len() == 3
-        && lines[0].starts_with("#")
+        && lines[0].starts_with('#')
         && lines[1].starts_with("# autor")
         && lines[2].starts_with("# datum")
 }

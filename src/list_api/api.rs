@@ -50,7 +50,7 @@ impl ListApiClient {
         let client = Client::builder().cookie_store(true).build()?;
 
         let response = client
-            .post(&format!("{}/students/do_login.html", LIST_URL))
+            .post(format!("{}/students/do_login.html", LIST_URL))
             .form(&[
                 ("student[email]", email),
                 ("student[password]", password),
@@ -77,7 +77,7 @@ impl ListApiClient {
     pub fn get_all_course(&self) -> Result<Vec<Course>, ListApiError> {
         let response = self
             .client
-            .get(&format!("{}/courses.html", self.base_url))
+            .get(format!("{}/courses.html", self.base_url))
             .send()?;
         let text = response.text()?;
         let courses = parser::parse_all_courses(&text)?;
@@ -87,7 +87,7 @@ impl ListApiClient {
     pub fn mark_course_active(&self, course_id: u32) -> Result<(), ListApiError> {
         let response = self
             .client
-            .get(&format!(
+            .get(format!(
                 "{}/courses/activate_course/{}.html",
                 self.base_url, course_id
             ))
@@ -111,7 +111,7 @@ impl ListApiClient {
 
         let response = self
             .client
-            .get(&format!("{}/tasks.html", self.base_url))
+            .get(format!("{}/tasks.html", self.base_url))
             .send()?;
         let text = response.text()?;
         let problems = parser::parse_problems(&text)?;
@@ -131,7 +131,7 @@ impl ListApiClient {
 
         let response = self
             .client
-            .post(&format!(
+            .post(format!(
                 "{}/tasks/upload_solution/{}.html",
                 self.base_url, problem_id
             ))
@@ -146,7 +146,7 @@ impl ListApiClient {
     pub fn get_submit_form(&self, problem_id: u32) -> Result<Option<RunTestForm>, ListApiError> {
         let response = self
             .client
-            .get(&format!("{}/tasks/task/{}.html", self.base_url, problem_id))
+            .get(format!("{}/tasks/task/{}.html", self.base_url, problem_id))
             .send()?;
         let text = response.text()?;
         let form = parser::parse_run_test_form(&text)?;
@@ -172,7 +172,7 @@ impl ListApiClient {
 
         let response = self
             .client
-            .post(&format!("{}/fetests/enqueue_test", self.base_url))
+            .post(format!("{}/fetests/enqueue_test", self.base_url))
             .form(&data)
             .send()?;
 
@@ -197,7 +197,7 @@ impl ListApiClient {
     ) -> Result<Vec<Test>, ListApiError> {
         let response = self
             .client
-            .get(&format!(
+            .get(format!(
                 "{}/fetests/get_student_test_queue/{}/{}",
                 self.base_url, problem_id, student_id
             ))
@@ -210,7 +210,7 @@ impl ListApiClient {
     pub fn get_test_result(&self, test_id: u32) -> Result<TestResult, ListApiError> {
         let response = self
             .client
-            .get(&format!(
+            .get(format!(
                 "{}/tasks/test_result/{}.html",
                 self.base_url, test_id
             ))

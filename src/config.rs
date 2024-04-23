@@ -104,12 +104,12 @@ impl GlobalConfig {
         let exists = path.exists();
         if !exists {
             std::fs::create_dir_all(path.parent().unwrap())?;
-            create_from_template(&path, include_str!("templates/global-config.toml"))?;
+            create_from_template(path, include_str!("templates/global-config.toml"))?;
         }
 
         let config = toml_edit::ser::to_string_pretty(self)?;
 
-        std::fs::write(&path, config)?;
+        std::fs::write(path, config)?;
 
         Ok(())
     }
@@ -317,8 +317,7 @@ impl ProjectConfig {
                     .file_name()
                     .is_some_and(|f| f != PROJECT_CONFIG_NAME)
             })
-            .map(|e| pathdiff::diff_paths(e.path(), relative_to))
-            .filter_map(|e| e)
+            .filter_map(|e| pathdiff::diff_paths(e.path(), relative_to))
             .map(LsbmPathBuf::from)
             .collect::<Vec<_>>();
 

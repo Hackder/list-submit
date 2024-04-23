@@ -319,7 +319,7 @@ pub fn parse_test_result(html: &str) -> Result<TestResult, ListParserError> {
                 .collect::<Vec<_>>();
 
             let name = items
-                .get(0)
+                .first()
                 .unwrap()
                 .text()
                 .collect::<String>()

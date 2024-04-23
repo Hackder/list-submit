@@ -59,7 +59,7 @@ fn main() -> eyre::Result<()> {
 
     let cwd = std::env::current_dir()?;
     let project_config_path = match &args.project {
-        Some(project) => ProjectConfig::find_project_config_down(cwd.as_path(), &project)?,
+        Some(project) => ProjectConfig::find_project_config_down(cwd.as_path(), project)?,
         None => ProjectConfig::find_project_config_up(cwd.as_path())?,
     };
 
@@ -77,8 +77,8 @@ fn main() -> eyre::Result<()> {
                 "No project found, creating new one in this directory".yellow()
             );
             client = Some(create_client(&config, &args)?);
-            let result = create_project_config(client.as_ref().expect("client must exist"), &cwd)?;
-            result
+
+            create_project_config(client.as_ref().expect("client must exist"), &cwd)?
         }
     };
 
@@ -94,9 +94,9 @@ fn main() -> eyre::Result<()> {
                 }
                 files => {
                     let real_files = files
-                        .into_iter()
+                        .iter()
                         .filter(|file| cwd.join(file).is_file())
-                        .map(|file| file.clone());
+                        .cloned();
 
                     project_config.add_files(real_files);
                 }
@@ -301,7 +301,7 @@ pub fn create_client(config: &GlobalConfig, args: &ListSubmitArgs) -> eyre::Resu
 
 pub fn create_project_config(
     client: &ListApiClient,
-    cwd: &PathBuf,
+    cwd: &Path,
 ) -> eyre::Result<(ProjectConfig, PathBuf)> {
     let courses = ui::show_request("courses", || client.get_all_course())?;
 
