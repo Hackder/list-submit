@@ -3,7 +3,7 @@ use reqwest::blocking::multipart::{Form, Part};
 use reqwest::blocking::Client;
 use serde::Deserialize;
 
-use super::models::{Course, Problem, Submit, SubmitForm, Test, TestResult};
+use super::models::{Course, Problem, Submit, RunTestForm, Test, TestResult};
 
 const LIST_URL: &str = "https://list.fmph.uniba.sk";
 
@@ -29,8 +29,8 @@ pub enum ListApiError {
     #[error("list returned false status")]
     ResponseStatusFalse,
 
-    #[error("the specified problem does not support submitting")]
-    SubmitNotSupported,
+    #[error("the specified problem does not support running tests")]
+    TestNotSupported,
 }
 
 impl From<reqwest::Error> for ListApiError {
@@ -143,13 +143,13 @@ impl ListApiClient {
         Ok(submits.last().unwrap().clone())
     }
 
-    pub fn get_submit_form(&self, problem_id: u32) -> Result<Option<SubmitForm>, ListApiError> {
+    pub fn get_submit_form(&self, problem_id: u32) -> Result<Option<RunTestForm>, ListApiError> {
         let response = self
             .client
             .get(&format!("{}/tasks/task/{}.html", self.base_url, problem_id))
             .send()?;
         let text = response.text()?;
-        let form = parser::parse_submit_form(&text)?;
+        let form = parser::parse_run_test_form(&text)?;
         Ok(form)
     }
 
@@ -160,7 +160,7 @@ impl ListApiClient {
     ) -> Result<(), ListApiError> {
         let form = self
             .get_submit_form(problem_id)?
-            .ok_or(ListApiError::SubmitNotSupported)?;
+            .ok_or(ListApiError::TestNotSupported)?;
 
         let mut data = vec![
             ("test[task_set_id]", form.task_set_id),

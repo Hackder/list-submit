@@ -44,7 +44,7 @@ pub struct Test {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct SubmitForm {
+pub struct RunTestForm {
     pub tests: Vec<String>,
     pub task_set_id: String,
     pub student_id: u32,

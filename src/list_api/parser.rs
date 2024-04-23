@@ -1,6 +1,6 @@
 use scraper::Selector;
 
-use super::models::{Course, Problem, Submit, SubmitForm, Test, TestResult, TestResultProblem};
+use super::models::{Course, Problem, Submit, RunTestForm, Test, TestResult, TestResultProblem};
 
 #[derive(Debug, thiserror::Error)]
 pub enum ListParserError {
@@ -161,7 +161,7 @@ pub fn parse_submits(html: &str, problem_id: u32) -> Result<Vec<Submit>, ListPar
     Ok(submits)
 }
 
-pub fn parse_submit_form(html: &str) -> Result<Option<SubmitForm>, ListParserError> {
+pub fn parse_run_test_form(html: &str) -> Result<Option<RunTestForm>, ListParserError> {
     let document = scraper::Html::parse_document(html);
 
     let tests = document
@@ -204,7 +204,7 @@ pub fn parse_submit_form(html: &str) -> Result<Option<SubmitForm>, ListParserErr
         .unwrap()
         .to_owned();
 
-    Ok(Some(SubmitForm {
+    Ok(Some(RunTestForm {
         tests,
         task_set_id,
         student_id,

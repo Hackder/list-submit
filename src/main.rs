@@ -172,7 +172,15 @@ fn main() -> eyre::Result<()> {
     })?;
 
     ui::show_request("run tests", || {
-        client.run_test_for_submit(project_config.problem.problem_id, submit.version)
+        let res = client.run_test_for_submit(project_config.problem.problem_id, submit.version);
+        match res {
+            Ok(_) => Ok(()),
+            Err(ListApiError::TestNotSupported) => {
+                eprintln!("{}", "Tests are not supported for this problem".yellow());
+                Ok(())
+            }
+            Err(err) => Err(err),
+        }
     })?;
 
     let result_id = ui::show_request("results", || -> eyre::Result<u32> {
