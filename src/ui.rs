@@ -1,5 +1,5 @@
-use spinners::Spinner;
 use colored::Colorize;
+use spinners::Spinner;
 
 pub fn with_spinner<T>(msg: &str, task: impl FnOnce() -> T) -> T {
     let msg = msg.to_owned();

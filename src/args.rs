@@ -14,7 +14,6 @@ pub struct ListSubmitArgs {
     pub subcommand: Option<ListSubmitCommand>,
 }
 
-
 #[derive(Debug, Subcommand, Clone)]
 pub enum ListSubmitCommand {
     Add(AddCommand),
@@ -34,4 +33,3 @@ pub struct AddCommand {
     #[clap(verbatim_doc_comment)]
     pub files: Vec<PathBuf>,
 }
-

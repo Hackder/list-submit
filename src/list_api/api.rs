@@ -28,6 +28,9 @@ pub enum ListApiError {
 
     #[error("list returned false status")]
     ResponseStatusFalse,
+
+    #[error("the specified problem does not support submitting")]
+    SubmitNotSupported,
 }
 
 impl From<reqwest::Error> for ListApiError {
@@ -120,8 +123,7 @@ impl ListApiClient {
         problem_id: u32,
         solution_file: Vec<u8>,
     ) -> Result<Submit, ListApiError> {
-        let file =
-            Part::bytes(solution_file).file_name("solution.zip");
+        let file = Part::bytes(solution_file).file_name("solution.zip");
 
         let form = Form::new()
             .text("submit_button", "Odovzdať riešenie")
@@ -141,7 +143,7 @@ impl ListApiClient {
         Ok(submits.last().unwrap().clone())
     }
 
-    pub fn get_submit_form(&self, problem_id: u32) -> Result<SubmitForm, ListApiError> {
+    pub fn get_submit_form(&self, problem_id: u32) -> Result<Option<SubmitForm>, ListApiError> {
         let response = self
             .client
             .get(&format!("{}/tasks/task/{}.html", self.base_url, problem_id))
@@ -156,7 +158,9 @@ impl ListApiClient {
         problem_id: u32,
         submit_version: u32,
     ) -> Result<(), ListApiError> {
-        let form = self.get_submit_form(problem_id)?;
+        let form = self
+            .get_submit_form(problem_id)?
+            .ok_or(ListApiError::SubmitNotSupported)?;
 
         let mut data = vec![
             ("test[task_set_id]", form.task_set_id),
@@ -206,7 +210,10 @@ impl ListApiClient {
     pub fn get_test_result(&self, test_id: u32) -> Result<TestResult, ListApiError> {
         let response = self
             .client
-            .get(&format!("{}/tasks/test_result/{}.html", self.base_url, test_id))
+            .get(&format!(
+                "{}/tasks/test_result/{}.html",
+                self.base_url, test_id
+            ))
             .send()?;
         let text = response.text()?;
         let result = parser::parse_test_result(&text)?;

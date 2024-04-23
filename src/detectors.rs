@@ -19,9 +19,8 @@ pub fn get_detectors() -> Vec<Box<dyn Detector>> {
 
 pub struct PythonDetector;
 
-static CODE_EXTENSIONS: [&'static str; 9] = [
-    "py", "java", "cpp", "c", "h", "hpp", "cc", "kt", "hs",
-];
+static CODE_EXTENSIONS: [&'static str; 9] =
+    ["py", "java", "cpp", "c", "h", "hpp", "cc", "kt", "hs"];
 
 pub fn is_program_file(path: &Path) -> bool {
     path.extension().map_or(false, |ext| {
@@ -91,7 +90,7 @@ impl Detector for PythonDetector {
             .into_iter()
             .filter(|f| f.extension().unwrap() == "py")
             .collect_vec();
-        
+
         if python_files.is_empty() {
             return Ok(DetectionResult {
                 probability: 0.0,

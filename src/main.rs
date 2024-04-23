@@ -4,6 +4,7 @@ use args::ListSubmitArgs;
 use clap::Parser;
 use colored::Colorize;
 use config::GlobalConfig;
+use eyre::OptionExt;
 use inquire::{Confirm, MultiSelect, Password, Select, Text};
 use list_api::api::{ListApiClient, ListApiError};
 use self_update::cargo_crate_version;
@@ -176,7 +177,9 @@ fn main() -> eyre::Result<()> {
 
     let result_id = ui::show_request("results", || -> eyre::Result<u32> {
         let now = chrono::Utc::now().naive_local();
-        let form = client.get_submit_form(project_config.problem.problem_id)?;
+        let form = client
+            .get_submit_form(project_config.problem.problem_id)?
+            .ok_or_eyre("The specified problem cannot be submitted")?;
 
         loop {
             let queue = client

@@ -161,7 +161,7 @@ pub fn parse_submits(html: &str, problem_id: u32) -> Result<Vec<Submit>, ListPar
     Ok(submits)
 }
 
-pub fn parse_submit_form(html: &str) -> Result<SubmitForm, ListParserError> {
+pub fn parse_submit_form(html: &str) -> Result<Option<SubmitForm>, ListParserError> {
     let document = scraper::Html::parse_document(html);
 
     let tests = document
@@ -172,7 +172,13 @@ pub fn parse_submit_form(html: &str) -> Result<SubmitForm, ListParserError> {
 
     let task_set_id = document
         .select(&Selector::parse("input[name=\"test[task_set_id]\"]").expect("valid selector"))
-        .next()
+        .next();
+
+    if task_set_id.is_none() {
+        return Ok(None);
+    }
+
+    let task_set_id = task_set_id
         .unwrap()
         .value()
         .attr("value")
@@ -198,12 +204,12 @@ pub fn parse_submit_form(html: &str) -> Result<SubmitForm, ListParserError> {
         .unwrap()
         .to_owned();
 
-    Ok(SubmitForm {
+    Ok(Some(SubmitForm {
         tests,
         task_set_id,
         student_id,
         select_test_type,
-    })
+    }))
 }
 
 pub fn parse_test_queue(html: &str) -> Result<Vec<Test>, ListParserError> {
