@@ -3,7 +3,7 @@ use reqwest::blocking::multipart::{Form, Part};
 use reqwest::blocking::Client;
 use serde::Deserialize;
 
-use super::models::{Course, Problem, Submit, RunTestForm, Test, TestResult};
+use super::models::{Course, Problem, RunTestForm, Submit, Test, TestResult};
 
 const LIST_URL: &str = "https://list.fmph.uniba.sk";
 

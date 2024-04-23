@@ -1,6 +1,6 @@
 use scraper::Selector;
 
-use super::models::{Course, Problem, Submit, RunTestForm, Test, TestResult, TestResultProblem};
+use super::models::{Course, Problem, RunTestForm, Submit, Test, TestResult, TestResultProblem};
 
 #[derive(Debug, thiserror::Error)]
 pub enum ListParserError {
