@@ -4,7 +4,6 @@ use args::ListSubmitArgs;
 use clap::Parser;
 use colored::Colorize;
 use config::GlobalConfig;
-use eyre::OptionExt;
 use inquire::{Confirm, MultiSelect, Password, Select, Text};
 use list_api::api::{ListApiClient, ListApiError};
 use self_update::cargo_crate_version;
@@ -171,23 +170,28 @@ fn main() -> eyre::Result<()> {
         client.submit_solution(project_config.problem.problem_id, buf)
     })?;
 
-    ui::show_request("run tests", || {
+    let run_tests_result = ui::show_request("run tests", || {
         let res = client.run_test_for_submit(project_config.problem.problem_id, submit.version);
         match res {
-            Ok(_) => Ok(()),
-            Err(ListApiError::TestNotSupported) => {
-                eprintln!("{}", "Tests are not supported for this problem".yellow());
-                Ok(())
-            }
+            Ok(_) => Ok(Some(())),
+            Err(ListApiError::TestNotSupported) => Ok(None),
             Err(err) => Err(err),
         }
     })?;
 
+    if let None = run_tests_result {
+        eprintln!("{}", "Tests are not supported for this problem".yellow());
+        return Ok(());
+    }
+
     let result_id = ui::show_request("results", || -> eyre::Result<u32> {
         let now = chrono::Utc::now().naive_local();
-        let form = client
-            .get_submit_form(project_config.problem.problem_id)?
-            .ok_or_eyre("The specified problem cannot be submitted")?;
+        let form = client.get_submit_form(project_config.problem.problem_id)?;
+
+        let form = match form {
+            Some(form) => form,
+            None => return Err(eyre::eyre!("Tests are not supported for this problem")),
+        };
 
         loop {
             let queue = client
