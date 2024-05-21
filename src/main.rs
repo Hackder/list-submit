@@ -150,14 +150,25 @@ fn main() -> eyre::Result<()> {
     };
 
     let mut buf = Vec::new();
+
     {
         let mut zip = zip::ZipWriter::new(std::io::Cursor::new(&mut buf));
         let options =
             zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Stored);
+
         for file in project_config.problem.files {
             eprintln!("Adding file: {}", file);
             let path = project_config_dir.join(file);
-            let file_name = path.file_name().unwrap().to_str().unwrap();
+
+            let file_name = if project_config.problem.flatten {
+                path.file_name().unwrap().to_str().unwrap()
+            } else {
+                path.strip_prefix(project_config_dir)
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+            };
+
             zip.start_file(file_name, options)?;
 
             let mut file = std::fs::File::open(path)?;
@@ -333,7 +344,7 @@ pub fn create_project_config(
         .filter(|(res, _)| res.probability > 0.0)
         .max_by_key(|(res, _)| (res.probability * 1000.0) as i32);
 
-    let files = match result {
+    let res = match result {
         Some((res, detector)) => {
             eprintln!();
             eprintln!(
@@ -343,30 +354,42 @@ pub fn create_project_config(
                 format!("with probability: {:.0}%", res.probability * 100.0).bold()
             );
 
-            for recom in res.recommendations {
+            for recom in &res.recommendations {
                 eprintln!("{}: {}", "Recommendation:".yellow(), recom);
             }
 
-            res.files
+            Some(res)
         }
         None => {
             eprintln!("{}", "Could not detect project automatically.".yellow());
             eprintln!("{}", "Add files using the `add` subcommand!".yellow());
-            vec![]
+
+            None
         }
     };
 
-    let files = files
-        .into_iter()
-        .map(|p| p.to_string_lossy().to_string())
-        .collect::<Vec<_>>();
+    let files = match res {
+        Some(ref res) => {
+            let files = res
+                .files
+                .iter()
+                .map(|p| p.to_string_lossy().to_string())
+                .collect::<Vec<_>>();
 
-    let files = if !files.is_empty() {
-        MultiSelect::new("Select autodetected files to keep", files)
-            .with_all_selected_by_default()
-            .prompt()?
-    } else {
-        files
+            MultiSelect::new("Select autodetected files to keep", files)
+                .with_all_selected_by_default()
+                .prompt()?
+        }
+        None => vec![],
+    };
+
+    let flatten = match res {
+        Some(ref res) => res.flatten,
+        None => {
+            let mode =
+                Select::new("Select file mode", vec!["Flatten", "Keep structure"]).prompt()?;
+            mode == "Flatten"
+        }
     };
 
     let (project_config, path) = ProjectConfig::create(
@@ -374,6 +397,7 @@ pub fn create_project_config(
         course.id,
         problem.id,
         &problem.name,
+        flatten,
         &files,
     )?;
 

@@ -144,6 +144,10 @@ pub struct ProblemConfig {
     pub course_id: u32,
     pub problem_id: u32,
     pub problem_name: String,
+
+    #[serde(default)]
+    pub flatten: bool,
+
     pub files: Vec<String>,
 }
 
@@ -249,6 +253,7 @@ impl ProjectConfig {
         course_id: u32,
         problem_id: u32,
         problem_name: &str,
+        flatten: bool,
         files: &Vec<String>,
     ) -> eyre::Result<(ProjectConfig, PathBuf)> {
         let path = path.join(PROJECT_CONFIG_NAME);
@@ -263,6 +268,7 @@ impl ProjectConfig {
                 course_id,
                 problem_id,
                 problem_name: problem_name.to_owned(),
+                flatten,
                 files: files.clone(),
             },
         };

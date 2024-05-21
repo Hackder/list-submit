@@ -4,6 +4,7 @@ use itertools::Itertools;
 
 pub struct DetectionResult {
     pub probability: f32,
+    pub flatten: bool,
     pub files: Vec<PathBuf>,
     pub recommendations: Vec<String>,
 }
@@ -14,7 +15,11 @@ pub trait Detector {
 }
 
 pub fn get_detectors() -> Vec<Box<dyn Detector>> {
-    vec![Box::new(PythonDetector), Box::new(JavaDetector)]
+    vec![
+        Box::new(PythonDetector),
+        Box::new(JavaDetector),
+        Box::new(JavaFxMavenDetector),
+    ]
 }
 
 pub struct PythonDetector;
@@ -56,12 +61,14 @@ impl Detector for PythonDetector {
             if has_list_header_comment(&path.join("riesenie.py")) {
                 return Ok(DetectionResult {
                     probability: 0.9,
+                    flatten: true,
                     files: vec![PathBuf::from("riesenie.py")],
                     recommendations: vec![],
                 });
             }
             return Ok(DetectionResult {
                 probability: 0.8,
+                flatten: true,
                 files: vec![PathBuf::from("riesenie.py")],
                 recommendations: vec!["File `riesenie.py` is missing a header comment.".to_string()],
             });
@@ -71,12 +78,14 @@ impl Detector for PythonDetector {
             if has_list_header_comment(&path.join("src/riesenie.py")) {
                 return Ok(DetectionResult {
                     probability: 0.9,
+                    flatten: true,
                     files: vec![PathBuf::from("src/riesenie.py")],
                     recommendations: vec![],
                 });
             }
             return Ok(DetectionResult {
                 probability: 0.8,
+                flatten: true,
                 files: vec![PathBuf::from("src/riesenie.py")],
                 recommendations: vec![
                     "File `src/riesenie.py` is missing a header comment.".to_string()
@@ -93,6 +102,7 @@ impl Detector for PythonDetector {
         if python_files.is_empty() {
             return Ok(DetectionResult {
                 probability: 0.0,
+                flatten: true,
                 files: vec![],
                 recommendations: vec![],
             });
@@ -101,6 +111,7 @@ impl Detector for PythonDetector {
         if python_files.len() == files_len {
             return Ok(DetectionResult {
                 probability: 0.8,
+                flatten: true,
                 files: python_files,
                 recommendations: vec![],
             });
@@ -109,6 +120,7 @@ impl Detector for PythonDetector {
         if python_files.len() as f32 / files_len as f32 > 0.5 {
             return Ok(DetectionResult {
                 probability: 0.5,
+                flatten: true,
                 files: python_files,
                 recommendations: vec![],
             });
@@ -117,6 +129,7 @@ impl Detector for PythonDetector {
         if !python_files.is_empty() {
             return Ok(DetectionResult {
                 probability: 0.3,
+                flatten: true,
                 files: python_files,
                 recommendations: vec![],
             });
@@ -124,6 +137,7 @@ impl Detector for PythonDetector {
 
         Ok(DetectionResult {
             probability: 0.0,
+            flatten: true,
             files: vec![],
             recommendations: vec![],
         })
@@ -187,6 +201,7 @@ impl Detector for JavaDetector {
         if java_files.is_empty() {
             return Ok(DetectionResult {
                 probability: 0.0,
+                flatten: true,
                 files: vec![],
                 recommendations: vec![],
             });
@@ -195,6 +210,7 @@ impl Detector for JavaDetector {
         if java_files.len() == files.len() {
             return Ok(DetectionResult {
                 probability: 0.8,
+                flatten: true,
                 files: non_test_files,
                 recommendations: vec![],
             });
@@ -203,6 +219,7 @@ impl Detector for JavaDetector {
         if java_files.len() as f32 / files.len() as f32 > 0.5 {
             return Ok(DetectionResult {
                 probability: 0.5,
+                flatten: true,
                 files: non_test_files,
                 recommendations: vec![],
             });
@@ -210,8 +227,61 @@ impl Detector for JavaDetector {
 
         Ok(DetectionResult {
             probability: 0.0,
+            flatten: true,
             files: vec![],
             recommendations: vec![],
         })
+    }
+}
+
+pub struct JavaFxMavenDetector;
+
+impl Detector for JavaFxMavenDetector {
+    fn name(&self) -> &'static str {
+        "JavaFX Maven"
+    }
+
+    fn detect(&self, path: &Path) -> eyre::Result<DetectionResult> {
+        let original_path = path;
+        let first_files = std::fs::read_dir(path)?
+            .filter_map(|e| e.ok())
+            .filter_map(|e| e.file_name().into_string().ok())
+            .collect::<Vec<_>>();
+
+        if !first_files.contains(&"pom.xml".to_string()) {
+            return Ok(DetectionResult {
+                probability: 0.0,
+                flatten: false,
+                files: vec![],
+                recommendations: vec![],
+            });
+        }
+
+        // Check if javafx is in the pom.xml
+        let pom = std::fs::read_to_string(path.join("pom.xml")).unwrap();
+        if !pom.contains("javafx") {
+            return Ok(DetectionResult {
+                probability: 0.0,
+                flatten: false,
+                files: vec![],
+                recommendations: vec![],
+            });
+        }
+
+        let files = walkdir::WalkDir::new(&path)
+            .into_iter()
+            .filter_map(|e| e.ok())
+            .map(|e| e.path().to_path_buf())
+            .filter(|f| f.is_file())
+            .map(|f| pathdiff::diff_paths(f, original_path).unwrap())
+            .filter(|f| !f.starts_with(".git"))
+            .collect::<Vec<_>>();
+
+        return Ok(DetectionResult {
+            probability: 0.95,
+            flatten: false,
+            files,
+            recommendations: vec![],
+        });
     }
 }
