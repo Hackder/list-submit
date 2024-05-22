@@ -142,4 +142,22 @@ lsbm -p project1 # will submit using the configuration in the project1 directory
 ```
 
 # Project detection
-TODO
+
+List-submit implements automatic project detection. When the utility is first ran,
+it checks the contents of the directory it is ran from, and tries to recognize
+common patterns in the project sturcture. If it detects a project, it will automatically
+suggest adding the relevant files, possibly also suggesting fixes if you miss common configuration
+issues.
+
+## Supported project types
+
+We support most common project types used at the Faculty of Mathematics and Informatics
+at Comenius University in Bratislava. If you have a project type that is not supported,
+and used by the faculty, please open an issue.
+
+Currently supported detectors are:
+- Python
+- Java
+- JavaFxMaven
+
+If you are interested in the details of the detection, please refer to the [source code](src/detectors.rs).
