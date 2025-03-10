@@ -11,7 +11,7 @@ Copy the provided command to your terminal
 ## Linux
 
 ```bash
-wget -q -O /tmp/list-submit-download.tar.gz $(wget -q -O - 'https://api.github.com/repos/Hackder/list-submit/releases/latest' | jq -r '.assets[] | select(.name=="list-submit-x86_64-unknown-linux-gnu.tar.gz").browser_download_url')
+wget -q -O /tmp/list-submit-download.tar.gz $(wget -q -O - 'https://api.github.com/repos/Hackder/list-submit/releases/latest' | jq -r '.assets[] | select(.name=="list-submit-x86_64-unknown-linux-musl.tar.gz").browser_download_url')
 tar -xzf /tmp/list-submit-download.tar.gz -C /tmp
 sudo mv /tmp/list-submit /usr/local/bin/lsbm
 ```
