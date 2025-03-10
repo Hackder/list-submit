@@ -1,6 +1,8 @@
 use scraper::Selector;
 
-use super::models::{Course, Problem, RunTestForm, Submit, Test, TestResult, TestResultProblem};
+use super::models::{
+    Course, Problem, RunTestForm, Semester, Submit, Test, TestResult, TestResultProblem,
+};
 
 #[derive(Debug, thiserror::Error)]
 pub enum ListParserError {
@@ -452,4 +454,30 @@ mod test {
             ]
         );
     }
+}
+
+pub fn parse_all_semesters(html: &str) -> Result<Vec<Semester>, ListParserError> {
+    let document = scraper::Html::parse_document(html);
+
+    let semester_selector =
+        Selector::parse("select[name=period_id]>option").expect("valid selector");
+    let semester_elements = document.select(&semester_selector);
+
+    let mut semesters = Vec::new();
+    for element in semester_elements {
+        let name = match element.text().next() {
+            Some(semester_name) => semester_name.into(),
+            None => {
+                log::debug!("Failed to parse course name. No h4 found. Skipping course.");
+                continue;
+            }
+        };
+
+        let id = element.value().attr("value").unwrap();
+        let id: u32 = id.parse().unwrap();
+
+        semesters.push(Semester { id, name });
+    }
+
+    Ok(semesters)
 }

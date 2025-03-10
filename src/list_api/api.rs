@@ -3,7 +3,7 @@ use reqwest::blocking::multipart::{Form, Part};
 use reqwest::blocking::Client;
 use serde::Deserialize;
 
-use super::models::{Course, Problem, RunTestForm, Submit, Test, TestResult};
+use super::models::{Course, Problem, RunTestForm, Semester, Submit, Test, TestResult};
 
 const LIST_URL: &str = "https://list.fmph.uniba.sk";
 
@@ -72,6 +72,39 @@ impl ListApiClient {
             client,
             base_url: LIST_URL.to_owned(),
         })
+    }
+
+    pub fn get_all_semesters(&self) -> Result<Vec<Semester>, ListApiError> {
+        let response = self
+            .client
+            .get(format!("{}/courses.html", self.base_url))
+            .send()?;
+        let text = response.text()?;
+        let semesters = parser::parse_all_semesters(&text)?;
+        Ok(semesters)
+    }
+
+    pub fn mark_semester_active_and_get_courses(
+        &self,
+        semester_id: u32,
+    ) -> Result<Vec<Course>, ListApiError> {
+        let response = self
+            .client
+            .post(format!("{}/courses.html", self.base_url))
+            .form(&[
+                ("period_id", semester_id.to_string()),
+                ("submit_button", "Vyber obdobie".into()),
+            ])
+            .send()?;
+
+        if !response.status().is_success() {
+            return Err(ListApiError::ResponseStatusFalse);
+        }
+
+        let text = response.text()?;
+        let courses = parser::parse_all_courses(&text)?;
+
+        Ok(courses)
     }
 
     pub fn get_all_course(&self) -> Result<Vec<Course>, ListApiError> {

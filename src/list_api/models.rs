@@ -16,6 +16,18 @@ impl Display for Course {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Semester {
+    pub id: u32,
+    pub name: String,
+}
+
+impl Display for Semester {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.name)
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Problem {
     pub id: u32,
     pub full_id: String,

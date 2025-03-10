@@ -318,7 +318,13 @@ pub fn create_project_config(
     client: &ListApiClient,
     cwd: &Path,
 ) -> eyre::Result<(ProjectConfig, PathBuf)> {
-    let courses = ui::show_request("courses", || client.get_all_course())?;
+    let semesters = ui::show_request("semesters", || client.get_all_semesters())?;
+
+    let semester = Select::new("Select a semester", semesters).prompt()?;
+
+    let courses = ui::show_request("courses", || {
+        client.mark_semester_active_and_get_courses(semester.id)
+    })?;
 
     let course = Select::new("Select a course", courses).prompt()?;
 
