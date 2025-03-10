@@ -1,6 +1,6 @@
 [package]
 name = "list-submit"
-version = "0.0.12"
+version = "0.0.13"
 edition = "2021"
 
 [dependencies]
@@ -13,9 +13,19 @@ inquire = "0.7.4"
 itertools = "0.12.1"
 log = "0.4.21"
 pathdiff = "0.2.1"
-reqwest = { version = "0.12.3", features = ["blocking", "cookies", "json", "multipart"] }
+reqwest = { version = "0.12.3", features = [
+  "blocking",
+  "cookies",
+  "json",
+  "multipart",
+] }
 scraper = "0.19.0"
-self_update = { version = "0.39.0", features = ["archive-tar", "archive-zip", "compression-flate2", "compression-zip-deflate"] }
+self_update = { version = "0.39.0", features = [
+  "archive-tar",
+  "archive-zip",
+  "compression-flate2",
+  "compression-zip-deflate",
+] }
 serde = { version = "1.0.197", features = ["derive"] }
 spinners = "4.1.1"
 thiserror = "1.0.58"
