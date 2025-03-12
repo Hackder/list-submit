@@ -292,6 +292,7 @@ impl ProjectConfig {
         problem["course_id"] = toml_edit::value(self.problem.course_id as i64);
         problem["problem_id"] = toml_edit::value(self.problem.problem_id as i64);
         problem["problem_name"] = toml_edit::value(&self.problem.problem_name);
+        problem["flatten"] = toml_edit::value(self.problem.flatten);
         let files_arr = problem["files"]
             .or_insert(toml_edit::array())
             .as_array_mut()
